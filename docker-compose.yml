@@ -1,0 +1,17 @@
+version: '3.1'
+services:
+  web:
+    image: dwools/nginx:elapids_final_project
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    restart: always
+  app:
+    image: dwools/node:elapids_final_project
+    build: ./
+    restart: always
+    ports:
+      - "8000:8000"
+    command: gunicorn -b 0.0.0.0:8000 app:app

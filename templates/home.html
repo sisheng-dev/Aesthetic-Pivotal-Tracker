@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block header %}
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+<style>
+  #map {
+    width: 100%;
+    height: 400px;
+  }
+</style>
+{% endblock %}
+{% block scripts %}
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+<script>
+shops = {{coffeeShops[0:10]|tojson}};  
+mapboxgl.accessToken = 'pk.eyJ1IjoibGhodW5nIiwiYSI6ImNsaGQxY21rcjBpNTUzanM3NmdjdDFteW0ifQ.jDash9iBhHvLuVErcui1BA';
+var map = new mapboxgl.Map(
+ {
+  container: 'map',
+  style: 'mapbox://styles/mapbox/streets-v12',
+  center: [shops[0].coordinates.longitude, shops[0].coordinates.latitude],
+  zoom: 8
+  } 
+);
+shops.forEach(shop => {
+  new mapboxgl.Marker()
+  .setLngLat([shop.coordinates.longitude, shop.coordinates.latitude])
+  .setPopup(new mapboxgl.Popup().setHTML('<b>' + shop.name + '</b>'))
+  .addTo(map);
+});
+</script>
+{% endblock %}
+{% block content %}
+<div class="accordion accordion-flush" id="accordionFlushExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+          Map
+        </button>
+      </h2>
+      <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+        <div class="accordion-body">
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+          Top 10 Coffee Shops
+        </button>
+      </h2>
+      <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+        <div class="accordion-body">
+            <div id="carouselExampleDark" class="carousel carousel-dark slide">
+
+                <div class="carousel-inner">
+                  <div class="carousel-item active" data-bs-interval="10000">
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                          <div class="col-md-4">
+                            <img src="{{coffeeShops[0].image_url}}" style="max-height: 150px" class="img-fluid rounded-start" alt="...">
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="card-title">{{coffeeShops[0].name}}</h5>
+                              <p class="card-text">{{coffeeShops[0].location.display_address[0]}}</p>
+                              <p class="card-text"><small class="text-body-secondary">Rating {{coffeeShops[0].rating}}</small></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                  {% for business in coffeeShops[1:10]  %}
+                  <div class="carousel-item" data-bs-interval="2000">
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                          <div class="col-md-4">
+                            <img src="{{business.image_url}}" style="max-height: 150px" class="img-fluid rounded-start" alt="...">
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="card-title">{{business.name}}</h5>
+                              <p class="card-text">{{business.location.display_address[0]}}</p>
+                              <p class="card-text"><small class="text-body-secondary">Rating {{business.rating}}</small></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>    
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+          Top 50 table
+        </button>
+      </h2>
+      <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+        <div class="accordion-body">            <div
+            class="table-responsive-md"
+        >
+            <table
+                class="table table-striped table-hover table-bordered table-sm"
+            >
+                <thead>
+                    <tr>
+                        <th scope="col">Rank</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for business in coffeeShops  %}
+                <tr>
+                    <td class="align-middle">{{ loop.index0 +1 }}</td>
+                    <td class="align-middle"><img src="{{business.image_url}}" class="img-thumbnail" style="max-height: 50px;" >{{ business.name }} </td>
+                    <td class="align-middle">{{ business["rating"] }} </td>
+    
+                </tr>       
+                {% endfor %}
+                </tbody>
+            </table>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
