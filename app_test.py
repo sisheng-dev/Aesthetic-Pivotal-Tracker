@@ -49,7 +49,7 @@ def login():
             email = form.email.data
             pw = form.password.data
             session['email'] = email
-            session['city']='Tacoma'
+            # session['city']='Tacoma'
             user = UserModel.query.filter_by(email=email).first()
             if user is not None and user.check_password(pw):
                 login_user(user)

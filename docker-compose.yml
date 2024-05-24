@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   web:
-    image: dwools/nginx:elapids_final_project
+    image: dwools/nginx:aesthetic_pivotal_tracker
     build: ./nginx
     ports:
       - "80:80"
@@ -9,7 +9,7 @@ services:
       - app
     restart: always
   app:
-    image: dwools/node:elapids_final_project
+    image: dwools/node:aesthetic_pivotal_tracker
     build: ./
     restart: always
     ports:
