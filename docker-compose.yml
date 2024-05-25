@@ -8,10 +8,35 @@ services:
     depends_on:
       - app
     restart: always
+    profiles: ['production']
   app:
-    image: dwools/node:aesthetic_pivotal_tracker
+    image: dwools/flask:aesthetic_pivotal_tracker
     build: ./
     restart: always
     ports:
       - "8000:8000"
     command: gunicorn -b 0.0.0.0:8000 app:app
+    profiles: ['production']
+  app-test:
+    image: dwools/flask:aesthetic_pivotal_tracker
+    build: ./
+    restart: always
+    volumes:
+      - ./:/local
+    ports:
+      - "80:5000"
+    command: python3 /local/app_test.py
+    profiles: ['test']
+  db:
+    image: postgres:10
+    restart: always
+    environment:
+      POSTGRES_USER: dwools
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pglogindb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    profiles: ["test", "production"]
+

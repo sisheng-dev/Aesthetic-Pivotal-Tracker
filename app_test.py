@@ -2,7 +2,7 @@
 # Import the necessary modules
 import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
-from forms import LoginForm
+from forms import LoginForm, RegisterForm
 from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required 
 from models import db, login_manager, UserModel
@@ -11,7 +11,21 @@ from models import db, login_manager, UserModel
 app = Flask(__name__)
 app.secret_key='super secret key'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./login.db'
+DBUSER = 'dwools'
+DBPASS = 'password'
+DBHOST = 'db'
+DBPORT = '5432'
+DBNAME = 'pglogindb'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{db}'.format(
+        user=DBUSER,
+        passwd=DBPASS,
+        host=DBHOST,
+        port=DBPORT,
+        db=DBNAME)
+
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./login.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -30,9 +44,9 @@ def add_user(email, password):
 def create_db():
     if (not os.path.exists('login.db')):
         db.create_all()
-        add_user('lhhung@uw.edu', 'password')
+        add_user('dwools@uw.edu', 'password')
 
-# Define a route for the root URL ("/") that returns "Hello World"
+
 @app.route('/home', methods=['GET'])
 @login_required
 def showCoffeeShops():
@@ -41,6 +55,7 @@ def showCoffeeShops():
     if 'city' in session:
         return render_template('home.html', coffeeShops=find_coffee(city=session['city']))
     return render_template('home.html', coffeeShops=find_coffee())
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form=LoginForm()
@@ -49,7 +64,7 @@ def login():
             email = form.email.data
             pw = form.password.data
             session['email'] = email
-            # session['city']='Tacoma'
+            session['city']='Tacoma'
             user = UserModel.query.filter_by(email=email).first()
             if user is not None and user.check_password(pw):
                 login_user(user)
@@ -59,6 +74,39 @@ def login():
                 logout_user()
                 return redirect(url_for('login'))
     return render_template('login.html',form=form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form=RegisterForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            email = form.email.data
+            pw = form.password.data
+            session['email'] = email
+            session['city']='Tacoma'
+            user = UserModel.query.filter_by(email=email).first()
+            if user is None:
+                add_user(email, pw)
+                user = UserModel.query.filter_by(email=email).first()
+                login_user(user)
+                return render_template('home.html', coffeeShops=find_coffee())
+            else:
+                flash('Email already exists')
+                return redirect(url_for('register'))                
+    return render_template('login.html',form=form)
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    """
+    Logout the user. Add another entry to the navbar for a logout function. You need to create a new route in app.py (/logout) and have it pop off all the elements in the session object.
+    """
+    
+    print(session)
+    session.clear()
+    print(session)
+   
+    return redirect('/login') 
+
 @login_manager.unauthorized_handler
 def unauthorized():
     flash ('You must be logged in to view that page')

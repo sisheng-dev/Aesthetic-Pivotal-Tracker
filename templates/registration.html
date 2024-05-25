@@ -12,8 +12,10 @@
       {{ form.password(class="form-control") }}
       <div id="passwordhelp" class="form-text">Enter password</div>
     </div>
-    <div class="col-auto"> <button type="submit" class="btn btn-primary">Login</button> </div>
-    <div class="col-auto"><a href="{{url_for('register')}}" class="btn btn-outline-primary" role="button" >Sign up</a></div> 
+    <div class="col-auto">
+      {{ form.confirm_password(class="form-control") }}
+      <div id="passwordconfirm" class="form-text">Confirm password</div>    
+    <div class="col-auto"> <button type="submit" class="btn btn-primary">Submit</button> </div>
   </form>
 </div>
 {% endblock %}

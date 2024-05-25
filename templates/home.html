@@ -64,7 +64,7 @@ shops.forEach(shop => {
                           <div class="col-md-8">
                             <div class="card-body">
                               <h5 class="card-title">{{coffeeShops[0].name}}</h5>
-                              <p class="card-text">{{coffeeShops[0].location.display_address[0]}}</p>
+                              <p class="card-text">{{coffeeShops[0].location.display_address[0]}}, {{coffeeShops[0].location.display_address[1]}}</p>
                               <p class="card-text"><small class="text-body-secondary">Rating {{coffeeShops[0].rating}}</small></p>
                             </div>
                           </div>
@@ -80,8 +80,8 @@ shops.forEach(shop => {
                           </div>
                           <div class="col-md-8">
                             <div class="card-body">
-                              <h5 class="card-title">{{business.name}}</h5>
-                              <p class="card-text">{{business.location.display_address[0]}}</p>
+                              <h5 class="card-title">{{business.name}}</h5>                              
+                              <p class="card-text">{{business.location.display_address[0]}}, {{business.location.display_address[1]}}</p>
                               <p class="card-text"><small class="text-body-secondary">Rating {{business.rating}}</small></p>
                             </div>
                           </div>
