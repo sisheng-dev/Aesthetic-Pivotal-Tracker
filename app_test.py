@@ -33,11 +33,16 @@ login_manager.init_app(app)
 
 #add user routine
 def add_user(email, password):
-    user = UserModel(email=email)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
-    return user
+    existing_user = UserModel.query.filter_by(email=email).first()
+    if existing_user:
+        # print(f"User with email '{email}' already exists.")
+        return existing_user
+    else:
+        user = UserModel(email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return user
 
 # create database with a test user
 @app.before_first_request
@@ -55,6 +60,8 @@ def showCoffeeShops():
     if 'city' in session:
         return render_template('home.html', coffeeShops=find_coffee(city=session['city']))
     return render_template('home.html', coffeeShops=find_coffee())
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -74,6 +81,11 @@ def login():
                 logout_user()
                 return redirect(url_for('login'))
     return render_template('login.html',form=form)
+
+
+
+
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
