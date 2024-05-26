@@ -1,19 +1,43 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
+{% block header %}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aesthetic Pivotal Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"> ?
+  ">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
 {% block content %}
-<div class="container-sm mt-2">
-<form class="row g-3" method="post">
-    {{ form.csrf_token }}
-    <div class="col-auto">
-      {{ form.email(class="form-control") }}
-      <div id="usernamehelp" class="form-text">Enter email</div>
-    </div>
-    <div class="col-auto">
-      {{ form.password(class="form-control") }}
-      <div id="passwordhelp" class="form-text">Enter password</div>
-    </div>
-    <div class="col-auto"> <button type="submit" class="btn btn-primary">Login</button> </div>
-    <div class="col-auto"><a href="{{url_for('register')}}" class="btn btn-outline-primary" role="button" >Sign up</a></div> 
+<div class="wrapper">
+  <form action="" method="post" ">
+    {{ form.csrf_token }}        
+      <h1>Login</h1>
+      <div class="input-box">
+      {{ form.email(placeholder = "email") }}
+          <!-- <input type="text" placeholder="Username"
+          required> -->
+          <i class='bx bxs-user'></i>
+      </div>
+      <div class="input-box">
+        
+      {{ form.password(placeholder = "Password") }}
+          <!-- <input type="password" placeholder="Password" required> -->
+          <i class='bx bxs-lock-alt'></i>
+          class="form-text">Enter password</
+      </div>
+
+      <div class="remember-forgot">
+          <label><input type="checkbox"> Remember me</label>
+          <a href="#">Forgot password?</a>
+      </div>
+
+      <button type="submit">Login</button>
+
+      <div class=" register-link"></div>
+      <p>Don't have an account? <a href="#">Register</a></p>
   </form>
 </div>
 {% endblock %}
