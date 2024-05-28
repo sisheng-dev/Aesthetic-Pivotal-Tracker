@@ -19,3 +19,15 @@ class UserModel(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return UserModel.query.get(int(user_id))
+
+class TaskModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.String(100), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
+
+class ProjectModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    project = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)

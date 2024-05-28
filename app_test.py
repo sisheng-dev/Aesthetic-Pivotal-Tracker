@@ -2,10 +2,10 @@
 # Import the necessary modules
 import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
-from forms import LoginForm, RegisterForm
+from forms import *
 from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required 
-from models import db, login_manager, UserModel
+from models import *
 
 # Create a new Flask application instance
 app = Flask(__name__)
@@ -83,10 +83,6 @@ def login():
     return render_template('login.html',form=form)
 
 
-
-
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form=RegisterForm()
@@ -123,6 +119,55 @@ def logout():
 def unauthorized():
     flash ('You must be logged in to view that page')
     return redirect(url_for('login'))
+
+@app.route('/new_project', methods=['POST'])
+def new_project():
+    form = ProjectForm()
+    if request.method == 'POST':
+        project = form.project.data
+        session['project'] = project
+        db.session.add(project)
+        db.session.commit()
+        flash('Project added')
+    render_template('home.html', project=form)
+
+@app.route('/new_task', methods=['POST'])
+def new_task():
+    form = TaskForm()
+    if request.method == 'POST':
+        task = form.task.data
+        session['task'] = task
+        db.session.add(task)
+        db.session.commit()
+        flash('Task added')        
+    return render_template('home.html', task=form)
+
+def complete_task():
+    pass
+
+
+@app.route('/delete_task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    task = TaskModel.query.get(task_id)
+    if task:
+        db.session.delete(task)
+        db.session.commit()
+        flash('Task deleted')
+    return redirect(url_for('home'))
+
+@app.route('/delete_project', methods=['POST'])
+def delete_project():
+    project = ProjectModel.query.get(session['project'])
+    if request.method == 'POST':
+        db.session.delete(project)
+        db.session.commit()
+        flash('Project deleted')
+    return redirect(url_for('home'))
+
+
+
+
+
 
 # Run the application if this script is being run directly
 if __name__ == '__main__':
