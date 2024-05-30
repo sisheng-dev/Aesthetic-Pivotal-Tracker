@@ -1,0 +1,182 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fcd8f0;
+}
+
+.menu-bar {
+    display: flex;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+.menu {
+    flex: 1;
+    font-weight: bold;
+}
+
+.menu-item {
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.main-container {
+    padding: 20px;
+}
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background-color: #ffc1ea;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    flex: 1;
+    margin: 0 10px;
+}
+
+.stat-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.charts {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.team-stats, .burn-up-list {
+    flex: 1;
+    background-color: #ffc1ea;
+    padding: 20px;
+    margin: 0 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.chart-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.queries {
+    background-color: #ffc1ea;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.query-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.query-options {
+    display: flex;
+    justify-content: space-around;
+}
+
+.tickets-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.my-tickets, .critical-tickets {
+    flex: 1;
+    background-color: #ffc1ea;
+    padding: 20px;
+    margin: 0 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.ticket-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.ticket {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.ticket-header {
+    font-weight: bold;
+}
+
+.ticket-description {
+    margin-bottom: 10px;
+}
+
+.ticket-owner {
+    font-style: italic;
+    color: gray;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+.kanban-board {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.kanban-column {
+    flex: 1;
+    background-color: #ffc1ea;
+    padding: 20px;
+    margin: 0 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.kanban-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.kanban-tasks {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    min-height: 50px;
+    text-align: left;
+}
+
+.calendar-container {
+    margin-top: 20px;
+}
+
+#calendar {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
