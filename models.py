@@ -22,12 +22,14 @@ def load_user(user_id):
 
 class TaskModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    task = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.Integer, db.ForeignKey('project_model.id'), nullable=False)
+    project = db.Column(db.String(100), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
+    completion_status = db.Column(db.Boolean, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
 
 class ProjectModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    project = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script>
+    window.onload = function() {
+        var addTaskButtons = document.getElementsByClassName('taskBoardColumnHeaderAction');
+        var addTaskModal = document.getElementById('addTaskModal');
+        var closeButton = document.getElementById('closeButton');
+
+        for (var i = 0; i < addTaskButtons.length; i++) {
+            addTaskButtons[i].addEventListener('click', function() {
+                addTaskModal.style.display = "block";
+            });
+        }
+
+        closeButton.addEventListener('click', function() {
+            addTaskModal.style.display = "none";
+        });
+    }
+</script>
+<script>
+    var newCategoryButton = document.getElementById("newCategoryButton");
+    var newCategoryColumn = document.getElementById("newCategoryColumn");
+    newCategoryButton.addEventListener("click", function() {
+        var addTaskModalClone = document.getElementById("addTaskModal").cloneNode(true);
+        newCategoryColumn.appendChild(addTaskModalClone);
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="taskBoardViewLandmark" role="main">
+    <div class="taskBoardView">
+        <div class="taskBoardColumn">
+            <div class="taskBoardColumnHeader">
+                <div class="taskBoardColumnHeaderTitle">To Do</div>
+                <div class="taskBoardColumnHeaderActions">
+                    <button class="taskBoardColumnHeaderAction">Add Task</button>
+                    <div id="addTaskModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close">&times;</span>
+                                <h2>Add Task</h2>
+                            </div>
+                            <div class="modal-body">
+                                <h3>Task Details</h3>
+                                <form>
+                                    <label for="notes">Notes:</label>
+                                    <textarea id="notes" name="notes"></textarea>
+                                    <label for="status">Status:</label>
+                                    <input type="radio" id="complete" name="status" value="complete">
+                                    <label for="complete">Complete</label>
+                                    <input type="radio" id="incomplete" name="status" value="incomplete">
+                                    <label for="incomplete">Incomplete</label>
+                                    <button type="submit">Save</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="saveButton">Save</button>
+                                <button id="closeButton">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="taskBoardColumnBody">
+                <div class="taskBoardTask">
+                    <div class="taskBoardTaskTitle">Task 1</div>
+                    <div class="taskBoardTaskActions">
+                        <button class="taskBoardTaskAction">Edit</button>
+                        <button class="taskBoardTaskAction">Delete</button>
+                    </div>
+                </div>
+                <div class="taskBoardTask">
+                    <div class="taskBoardTaskTitle">Task 2</div>
+                    <div class="taskBoardTaskActions">
+                        <button class="taskBoardTaskAction">Edit</button>
+                        <button class="taskBoardTaskAction">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="taskBoardColumn">
+            <div class="taskBoardColumnHeader">
+                <div class="taskBoardColumnHeaderTitle">In Progress</div>
+                <div class="taskBoardColumnHeaderActions">
+                    <button class="taskBoardColumnHeaderAction">Add Task</button>
+                    <div id="addTaskModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close">&times;</span>
+                                <h2>Add Task</h2>
+                            </div>
+                            <div class="modal-body">
+                                <h3>Task Details</h3>
+                                <form>
+                                    <label for="notes">Notes:</label>
+                                    <textarea id="notes" name="notes"></textarea>
+                                    <label for="status">Status:</label>
+                                    <input type="radio" id="complete" name="status" value="complete">
+                                    <label for="complete">Complete</label>
+                                    <input type="radio" id="incomplete" name="status" value="incomplete">
+                                    <label for="incomplete">Incomplete</label>
+                                    <button type="submit">Save</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="saveButton">Save</button>
+                                <button id="closeButton">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="taskBoardColumnBody">
+                <div class="taskBoardTask">
+                    <div class="taskBoardTaskTitle">Task 3</div>
+                    <div class="taskBoardTaskActions">
+                        <button class="taskBoardTaskAction">Edit</button>
+                        <button class="taskBoardTaskAction">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="taskBoardColumn">
+            <div class="taskBoardColumnHeader">
+                <div class="taskBoardColumnHeaderTitle">In Progress</div>
+                <div class="taskBoardColumnHeaderActions">
+                    <button id="newCategoryButton">New Category</button>
+                    <div id="newCategoryColumn" class="col-1">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+

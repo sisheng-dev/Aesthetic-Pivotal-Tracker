@@ -2,10 +2,10 @@
 # Import the necessary modules
 import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
-from forms import *
+from forms import LoginForm, RegisterForm, ProjectForm, TaskForm
 from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required 
-from models import *
+from models import db, login_manager, UserModel #, TaskModel, ProjectModel
 
 # Create a new Flask application instance
 app = Flask(__name__)
@@ -75,6 +75,7 @@ def login():
             user = UserModel.query.filter_by(email=email).first()
             if user is not None and user.check_password(pw):
                 login_user(user)
+                # return render_template('home1.html', projects=ProjectModel.query.all())
                 return render_template('home.html', coffeeShops=find_coffee())
             else:
                 flash('Invalid email or password')
@@ -97,6 +98,7 @@ def register():
                 add_user(email, pw)
                 user = UserModel.query.filter_by(email=email).first()
                 login_user(user)
+                # return render_template('home1.html', projects=ProjectModel.query.all())
                 return render_template('home.html', coffeeShops=find_coffee())
             else:
                 flash('Email already exists')
@@ -120,49 +122,81 @@ def unauthorized():
     flash ('You must be logged in to view that page')
     return redirect(url_for('login'))
 
-@app.route('/new_project', methods=['POST'])
-def new_project():
-    form = ProjectForm()
-    if request.method == 'POST':
-        project = form.project.data
-        session['project'] = project
-        db.session.add(project)
-        db.session.commit()
-        flash('Project added')
-    render_template('home.html', project=form)
+@app.route('/project', methods=['GET'])
+def project():
+    if request.method == 'GET':
+        return render_template('project.html')
 
-@app.route('/new_task', methods=['POST'])
-def new_task():
-    form = TaskForm()
-    if request.method == 'POST':
-        task = form.task.data
-        session['task'] = task
-        db.session.add(task)
-        db.session.commit()
-        flash('Task added')        
-    return render_template('home.html', task=form)
+# @app.route('/new_project', methods=['POST'])
+# def new_project():
+#     form = ProjectForm()
+#     if request.method == 'POST':
+#         project = form.project.data
+#         session['project'] = project
+#         db.session.add(project)
+#         db.session.commit()
+#         flash('Project added')
+#     render_template('home.html', project=form)
 
-def complete_task():
-    pass
+# @app.route('/new_task', methods=['POST'])
+# def new_task():
+#     form = TaskForm()
+#     if request.method == 'POST':
+#         task = form.task.data
+#         session['task'] = task
+#         session['completion_status'] = form.completion_status.data
+#         task.user_id = current_user.id
+#         db.session.add(task)
+#         db.session.commit()
+#         flash('Task added')        
+#     return render_template('project.html', task=form)
+
+# @app.route('/project', methods=['GET'])
+# def get_task_list():
+#     tasks = ProjectModel.query.get(session['tasks'])
+    
+
+#     return render_template('project.html', project=project)
+
+# @app.route('/home', methods=['GET'])
+# def get_project_list():
+#     user_id = 
+#     user = UserModel.query.filter_by(email=email).first()
+#     if ProjectModel.user_id == current_user.id:
+#         projects = ProjectModel.query.get(session['projects'])
+#         return render_template('home1.html', projects=projects)
+
+# # @app.route('/complete_task', methods=['POST'])
+# # def complete_task():
+# #     task = TaskForm()
+# #     if request.method == 'POST':
+# #         task = TaskModel.query.get(TaskModel.id)
+# #         task.completion_status = True
+# #         db.session.commit()
+# #         flash('Task completed')
 
 
-@app.route('/delete_task/<int:task_id>', methods=['POST'])
-def delete_task(task_id):
-    task = TaskModel.query.get(task_id)
-    if task:
-        db.session.delete(task)
-        db.session.commit()
-        flash('Task deleted')
-    return redirect(url_for('home'))
 
-@app.route('/delete_project', methods=['POST'])
-def delete_project():
-    project = ProjectModel.query.get(session['project'])
-    if request.method == 'POST':
-        db.session.delete(project)
-        db.session.commit()
-        flash('Project deleted')
-    return redirect(url_for('home'))
+
+# @app.route('/delete_task/<int:task_id>', methods=['POST'])
+# def delete_task(task_id):
+#     task = TaskModel.query.get(task_id)
+#     if task:
+#         db.session.delete(task)
+#         db.session.commit()
+#         flash('Task deleted')
+#     return redirect(url_for('home'))
+
+# @app.route('/delete_project', methods=['POST'])
+# def delete_project():
+#     project = ProjectModel.query.get(session['project'])
+#     if request.method == 'POST':
+#         db.session.delete(project)
+#         db.session.commit()
+#         flash('Project deleted')
+#     return redirect(url_for('home'))
+
+
 
 
 
@@ -172,3 +206,4 @@ def delete_project():
 # Run the application if this script is being run directly
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug='True', port=5000)
+

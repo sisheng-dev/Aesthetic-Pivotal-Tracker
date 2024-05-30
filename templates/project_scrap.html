@@ -1,0 +1,200 @@
+<!-- customize -->
+<!-- Button trigger modal -->
+<button
+    type="button"
+    class="btn btn-primary btn-lg"
+    data-bs-toggle="modal"
+    data-bs-target="#modalId"
+>
+    Launch
+</button>
+
+<!-- Modal -->
+<div
+    class="modal"
+    id="modalId"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalTitleId"
+    aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">
+                    Modal title
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">Add rows here</div>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modalId = document.getElementById('modalId');
+
+    modalId.addEventListener('show.bs.modal', function (event) {
+          // Button that triggered the modal
+          let button = event.relatedTarget;
+          // Extract info from data-bs-* attributes
+          let recipient = button.getAttribute('data-bs-whatever');
+
+        // Use above variables to manipulate the DOM
+    });
+</script>
+
+
+<!-- modal1 content -->
+
+<button id="addTaskButton">Add Task</button>
+<div id="addTaskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Add Task</h2>
+        </div>
+        <div class="modal-body">
+            <h3>Task Details</h3>
+            <form>
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes"></textarea>
+                <label for="status">Status:</label>
+                <input type="radio" id="complete" name="status" value="complete">
+                <label for="complete">Complete</label>
+                <input type="radio" id="incomplete" name="status" value="incomplete">
+                <label for="incomplete">Incomplete</label>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button id="saveButton">Save</button>
+            <button id="closeButton">Close</button>
+        </div>
+    </div>
+</div>>
+<script>
+    var addTaskButton = document.getElementById("addTaskButton");
+    var addTaskModal = document.getElementById("addTaskModal");
+    var closeButton = document.getElementById("closeButton");
+
+    addTaskButton.addEventListener("click", function() {
+        addTaskModal.style.display = "block";
+    });
+
+    closeButton.addEventListener("click", function() {
+        addTaskModal.style.display = "none";
+    });
+</script>
+
+
+<!-- teams planner task base code -->
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends 'base.html' %}
+{% block title %}Project{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<div data-landmark="true" class="taskBoardViewLandmark css-430" role="main">
+    <div class="taskBoardView css-499">
+        <ul class="columnsList css-500">
+            <li data-is-focusable="true" class="taskBoardColumn css-504" data-index="0" data-dnd-role="column"
+                id="column_I2Qd5yyeV0eqr7ndZ0fxA2QAMS56" tabindex="0"
+                aria-label="Column To do, Use Ctrl+Shift+Comma and Ctrl+Shift+Period to move this column left or right.">
+                <div class="columnContent">
+                    <div class="columnHeader css-505" draggable="true">
+                        <div class="columnHeaderTitle passive_1">
+                            <div class="titleSection css-507">
+                                <div class="columnTitle" tabindex="0" role="button" title="To do">
+                                    <h3>To do</h3>
+                                </div>
+                                <div class="editMenu">
+                                    <div class="ms-TooltipHost root-141" role="none"><button type="button"
+                                            class="ms-Button ms-Button--icon editMenuLauncher root-485"
+                                            aria-label="More Options" data-is-focusable="true"><span
+                                                class="ms-Button-flexContainer flexContainer-133"
+                                                data-automationid="splitbuttonprimary"><i data-icon-name="plannerMore"
+                                                    aria-hidden="true"
+                                                    class="ms-Icon root-89 ms-Button-icon plannerIcon plannerMore icon-135 plannerIcon plannerMore css-98"><svg
+                                                        class="css-97 ___12fm75w f1w7gpdv fez10in fg4l7m0"
+                                                        fill="currentColor" aria-hidden="true" width="20" height="20"
+                                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M6.25 10a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM15 11.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z"
+                                                            fill="currentColor"></path>
+                                                    </svg></i></span></button>
+                                        <div hidden="" id="tooltip1313"
+                                            style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0px; border: 0px; overflow: hidden; white-space: nowrap;">
+                                            More Options</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="addButtonContainer">
+                            <div class="addButton css-506 active_0" aria-label="Add task card in To do column"
+                                role="button" tabindex="0" title="Add a task"><i data-icon-name="plannerAdd"
+                                    aria-hidden="true" class="plannerIcon plannerAdd root-130"><svg
+                                        class="css-97 ___12fm75w f1w7gpdv fez10in fg4l7m0" fill="currentColor"
+                                        aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M10 2.5a.5.5 0 0 0-1 0V9H2.5a.5.5 0 0 0 0 1H9v6.5a.5.5 0 0 0 1 0V10h6.5a.5.5 0 0 0 0-1H10V2.5Z"
+                                            fill="currentColor"></path>
+                                    </svg></i><span class="addTaskText">Add task</span></div>
+                        </div>
+                    </div>
+                    <div class="scrollable css-508" data-can-drag-to-scroll="true">
+                        <div class="primarySection taskBoardColumnGroup css-509" data-dnd-role="columnGroup"
+                            data-can-drag-to-scroll="true">
+                            <div class="listWrapper"></div>
+                            <div data-dnd-role="bottomDropZone" data-can-drag-to-scroll="true"
+                                class="bottomDropZone css-512"></div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="createColumn css-501">
+                <div class="columnContent" data-can-drag-to-scroll="true">
+                    <div class="columnHeader">
+                        <div class="columnHeaderTitle">
+                            <h3 class="titleSection"><button class="columnTitle addColumnButton css-502"
+                                    title="Add a new bucket" aria-label="Add a new bucket"><i
+                                        data-icon-name="plannerAdd" aria-hidden="true"
+                                        class="plannerIcon plannerAdd root-130"><svg
+                                            class="css-97 ___12fm75w f1w7gpdv fez10in fg4l7m0" fill="currentColor"
+                                            aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M10 2.5a.5.5 0 0 0-1 0V9H2.5a.5.5 0 0 0 0 1H9v6.5a.5.5 0 0 0 1 0V10h6.5a.5.5 0 0 0 0-1H10V2.5Z"
+                                                fill="currentColor"></path>
+                                        </svg></i><span class="active_1"> Add new bucket</span></button></h3>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+{% endblock %}
+

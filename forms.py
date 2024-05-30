@@ -16,5 +16,6 @@ class ProjectForm(FlaskForm):
     submit = SubmitField('submit')
 
 class TaskForm(FlaskForm):
-    task = StringField('task', validators=[DataRequired(), Length(min=1, max=40)])
+    title = StringField('task', validators=[DataRequired(), Length(min=1, max=100)])
+    description = StringField('description', validators=[DataRequired(), Length(min=1, max=500)])
     submit = SubmitField('submit')
