@@ -198,3 +198,225 @@
 
 {% endblock %}
 
+
+<div class="taskBoardViewLandmark" role="main">
+    <div class="taskBoardView">
+        <div class="taskBoardColumn">
+            <div class="taskBoardColumnHeader">
+                <div class="taskBoardColumnHeaderTitle">To Do</div>
+                <div class="taskBoardColumnHeaderActions">
+                    <button class="taskBoardColumnHeaderAction">Add Task</button>
+                    <div id="addTaskModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close">&times;</span>
+                                <h2>Add Task</h2>
+                            </div>
+                            <div class="modal-body">
+                                <h3>Task Details</h3>
+                                <form>
+                                    <label for="notes">Notes:</label>
+                                    <textarea id="notes" name="notes"></textarea>
+                                    <label for="status">Status:</label>
+                                    <input type="radio" id="complete" name="status" value="complete">
+                                    <label for="complete">Complete</label>
+                                    <input type="radio" id="incomplete" name="status" value="incomplete">
+                                    <label for="incomplete">Incomplete</label>
+                                    <button type="submit">Save</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="saveButton">Save</button>
+                                <button id="closeButton">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="taskBoardColumnBody">
+                <div class="taskBoardTask">
+                    <div class="taskBoardTaskTitle">Task 1</div>
+                    <div class="taskBoardTaskActions">
+                        <button class="taskBoardTaskAction">Edit</button>
+                        <button class="taskBoardTaskAction">Delete</button>
+                    </div>
+                </div>
+                <div class="taskBoardTask">
+                    <div class="taskBoardTaskTitle">Task 2</div>
+                    <div class="taskBoardTaskActions">
+                        <button class="taskBoardTaskAction">Edit</button>
+                        <button class="taskBoardTaskAction">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="taskBoardColumn">
+            <div class="taskBoardColumnHeader">
+                <div class="taskBoardColumnHeaderTitle">In Progress</div>
+                <div class="taskBoardColumnHeaderActions">
+                    <button class="taskBoardColumnHeaderAction">Add Task</button>
+                    <div id="addTaskModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close">&times;</span>
+                                <h2>Add Task</h2>
+                            </div>
+                            <div class="modal-body">
+                                <h3>Task Details</h3>
+                                <form>
+                                    <label for="notes">Notes:</label>
+                                    <textarea id="notes" name="notes"></textarea>
+                                    <label for="status">Status:</label>
+                                    <input type="radio" id="complete" name="status" value="complete">
+                                    <label for="complete">Complete</label>
+                                    <input type="radio" id="incomplete" name="status" value="incomplete">
+                                    <label for="incomplete">Incomplete</label>
+                                    <button type="submit">Save</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="saveButton">Save</button>
+                                <button id="closeButton">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="taskBoardColumnBody">
+                <div class="taskBoardTask">
+                    <div class="taskBoardTaskTitle">Task 3</div>
+                    <div class="taskBoardTaskActions">
+                        <button class="taskBoardTaskAction">Edit</button>
+                        <button class="taskBoardTaskAction">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="taskBoardColumn">
+            <div class="taskBoardColumnHeader">
+                <div class="taskBoardColumnHeaderTitle">In Progress</div>
+                <div class="taskBoardColumnHeaderActions">
+                    <button id="newCategoryButton">New Category</button>
+                    <div id="newCategoryColumn" class="col-1">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Create three columns. Each column should have a header with a title and a button to add a task. When the button is clicked, a modal should appear with a form to add a task. The modal should have a close button to close the modal. The modal should have a title, description, and a submit button. When the submit button is clicked, the task should be added to the column. Beneath each column's header should be a card. The card should have the title "Task" and a description "This is a task". The card should have a button to edit the task. When the button is clicked, a modal should appear with a form to edit the task. The modal should have a close button to close the modal. The modal should have a title, description, and a submit button. When the submit button is clicked, the task should be updated. The card should have a button to delete the task. When the button is clicked, the task should be deleted. The columns should be draggable so that they can be rearranged. The cards should be draggable so that they can be moved between columns. The columns and cards should be saved in the database so that they persist when the page is reloaded.  -->
+{% block scripts %}
+
+<script>
+    window.onload = function() {
+        var addTaskButtons = document.getElementsByClassName('add-task-button');
+        var addTaskModal = document.getElementById('addTaskModal');
+        var closeButton = document.getElementById('closeButton');
+        for (var i = 0; i < addTaskButtons.length; i++) {
+            addTaskButtons[i].addEventListener('click', function() {
+                addTaskModal.style.display = "block";
+            });
+        }
+        closeButton.addEventListener('click', function() {
+            addTaskModal.style.display = "none";
+        });
+
+        var editTaskButtons = document.getElementsByClassName('edit-task-button');
+        var editTaskModal = document.getElementById('editTaskModal');
+        var editCloseButton = document.getElementById('editCloseButton');
+        for (var i = 0; i < editTaskButtons.length; i++) {
+            editTaskButtons[i].addEventListener('click', function() {
+                editTaskModal.style.display = "block";
+            });
+        }
+        editCloseButton.addEventListener('click', function() {
+            editTaskModal.style.display = "none";
+        });
+    }
+</script>
+
+<script>
+    var newCategoryButton = document.getElementById("newCategoryButton");
+    var newCategoryColumn = document.getElementById("newCategoryColumn");
+    newCategoryButton.addEventListener("click", function() {
+        var addTaskModalClone = document.getElementById("addTaskModal").cloneNode(true);
+        newCategoryColumn.appendChild(addTaskModalClone);
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="column">
+    <div class="column-header">
+        <h2>Column 1</h2>
+        <button class="add-task-button">Add Task</button>
+    </div>
+    <div class="card">
+        <h3>Task</h3>
+        <p>This is a task</p>
+        <button class="edit-task-button">Edit Task</button>
+        <button class="delete-task-button">Delete Task</button>
+    </div>
+</div>
+
+<div class="column">
+    <div class="column-header">
+        <h2>Column 2</h2>
+        <button class="add-task-button">Add Task</button>
+    </div>
+    <div class="card">
+        <h3>Task</h3>
+        <p>This is a task</p>
+        <button class="edit-task-button">Edit Task</button>
+        <button class="delete-task-button">Delete Task</button>
+    </div>
+</div>
+
+<div class="column">
+    <div class="column-header">
+        <h2>Column 3</h2>
+        <button class="add-task-button">Add Task</button>
+    </div>
+    <div class="card">
+        <h3>Task</h3>
+        <p>This is a task</p>
+        <button class="edit-task-button">Edit Task</button>
+        <button class="delete-task-button">Delete Task</button>
+    </div>
+</div>
+
+<div id="addTaskModal" class="modal">
+    <div class="modal-content">
+        <span id="closeButton" class="close">&times;</span>
+        <h2>Add Task</h2>
+        <form>
+            <label for="taskTitle">Title:</label>
+            <input type="text" id="taskTitle" name="taskTitle" required>
+            <label for="taskDescription">Description:</label>
+            <textarea id="taskDescription" name="taskDescription" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+<div id="editTaskModal" class="modal">
+    <div class="modal-content">
+        <span id="closeButton" class="close">&times;</span>
+        <h2>Edit Task</h2>
+        <form>
+            <label for="editTaskTitle">Title:</label>
+            <input type="text" id="editTaskTitle" name="editTaskTitle" required>
+            <label for="editTaskDescription">Description:</label>
+            <textarea id="editTaskDescription" name="editTaskDescription" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+<!-- Create three columns. Each of the first two columns should have a header with a title and a button to add a task. When the button is clicked, a modal should appear with a form to add a task. The modal should have a close button to close the modal. The modal should have a title, description, a due date, and a submit button. When the submit button is clicked, the task should be added to the column. Beneath each column's header should be a card. The card should have the title "Task" and a description "This is a task". The card should have a button to edit the task. When the button is clicked, a modal should appear with a form to edit the task. The modal should have a close button to close the modal. The modal should have a title, description, a due date, and a submit button. When the submit button is clicked, the task should be updated. The card should have a button to delete the task. When the button is clicked, the task should be deleted. The columns should be draggable so that they can be rearranged. The cards should be draggable so that they can be moved between columns. The columns and cards should be saved in the database so that they persist when the page is reloaded. The third column should have a button to add another column. When the button is clicked, a new column should be added with the same functionality as the other columns. The columns should be saved in the database so that they persist when the page is reloaded. -->
