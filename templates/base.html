@@ -1,122 +1,96 @@
-<!doctype html>
+<span style="font-family: verdana, geneva, sans-serif;"></span>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>{% block title %} {% endblock title %}</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
 
-        <!-- Bootstrap CSS v5.3.2 -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-            crossorigin="anonymous"
-        />
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
+  </head>
 
-    <body>
-        <header>
-            {% block header %} {% endblock header %}
-            <!-- place navbar here -->
-            <nav
-                class="navbar navbar-expand-sm navbar-dark bg-primary"
-            >
-                <div class="container">
-                    <a class="navbar-brand" href="#">Coffee shops</a>
-                    <button
-                        class="navbar-toggler d-lg-none"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapsibleNavId"
-                        aria-controls="collapsibleNavId"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="collapsibleNavId">
-                        <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{{url_for('showCoffeeShops')}}" aria-current="page"
-                                    >Home
-                                    <span class="visually-hidden">(current)</span></a
-                                >
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{url_for('login')}}">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('project')}}">Project</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a
-                                    class="nav-link dropdown-toggle"
-                                    href="#"
-                                    id="dropdownId"
-                                    data-bs-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                    >Dropdown</a
-                                >
-                                <div
-                                    class="dropdown-menu"
-                                    aria-labelledby="dropdownId"
-                                >
-                                    <a class="dropdown-item" href="{{ url_for('showCoffeeShops')}}?city='Tacoma'"
-                                        >Tacoma</a
-                                    >
-                                    <a class="dropdown-item" href="{{ url_for('showCoffeeShops')}}?city='Seattle'"
-                                        >Seattle</a
-                                    >
-				                    <a class="dropdown-item" href="{{ url_for('showCoffeeShops')}}?city='Olympia'"
-                                        >Olympia</a
-                                    >
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-            
-        </header>
-        <main>
-            <div class="card">
-            <img src="https://d368g9lw5ileu7.cloudfront.net/races/races-127xxx/127137/raceBanner-qZvNMCuU-bIk976.jpg">
-            <div class="card-body" align="center" >
-            {% block content %}
-            {% endblock %}
-            </div>
-        </main>
-        <footer>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class=flashes>
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-            {% endwith %}
-        </footer>
-        <!-- Bootstrap JavaScript Libraries -->
-        {% block scripts %}  {% endblock scripts %}
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous"
-        ></script>
+  <body>
+    <div class="container">
+      <nav>
+        <ul>
+          <li><a href="#" class="logo">
+              <img src="/logo.jpg" alt="">
+              <span class="nav-item">DashBoard</span>
+            </a></li>
+          <li><a href="#">
+              <!-- <i class="fas fa-home"></i> -->
+              <span class="nav-item">Home</span>
+            </a></li>
+          <li><a href="">
+              <!-- <i class="fas fa-user"></i> -->
+              <span class="nav-item">Profile</span>
+            </a></li>
+          <li><a href="">
+              <!-- <i class="fas fa-chart-bar"></i> -->
+              <span class="nav-item">Pivotal Tracker(?)</span>
+            </a></li>
+          <li><a href="">
+              <!-- <i class="fas fa-tasks"></i> -->
+              <span class="nav-item">Tasks</span>
+            </a></li>
+          <li><a href="">
+              <!-- <i class="fas fa-cog"></i> -->
+              <span class="nav-item">Settings</span>
+            </a></li>
 
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-            crossorigin="anonymous"
-        ></script>
-    </body>
+          <li class = "nav-item">
+            <a class = "nav-link" href ="{{ url_for('project')}}">Project</a>
+          </li>
+              <!-- <i class="fas fa-question-circle"></i> -->
+              
+          <li><a href="{{ url_for('logout')}}" class="logout">
+              <!-- <i class="fas fa-sign-out-alt"></i> -->
+              <span class="nav-item">Log out</span>
+            </a></li>
+        </ul>
+      </nav>
+
+      <section class="main">
+        <div class="main-top">
+          <h1>Projects</h1>
+          <i class="fas fa-user-cog"></i>
+        </div>
+        <div class="main-skills">
+          <div class="card">
+            <h3>Project 01</h3>
+            <p>Project Description(?) or Deadline</p>
+            <button>View Project</button>
+          </div>
+          <div class="card">
+            <h3>Project 02</h3>
+            <p>Project Description(?) or Deadline</p>
+            <button>View Project</button>
+          </div>
+          <div class="card">
+            <h3>Project 03</h3>
+            <p>Project Description(?) or Deadline</p>
+            <button>View Project</button>
+          </div>
+          <div class="card">
+            <h3>Project 04</h3>
+            <p>Project Description(?) or Deadline</p>
+            <button>View Project</button>
+          </div>
+        </div>
+
+        <section class="main-course">
+          <h1>My Calendar</h1>
+
+
+          <div class="calendar-container">
+            <div id="calendar"></div>
+          </div>
+    </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <script src="script.js"></script>
+  </body>>
 </html>
