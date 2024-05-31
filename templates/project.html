@@ -1,15 +1,87 @@
+{% extends 'base.html' %}
 {% block header %}
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aesthetic Pivotal Tracker</title>
-<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
-<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<!-- <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> -->
 
 {% endblock %}
 
-{% block scripts %}
 
+
+{% block content %}
+
+<dif class="container">
+    <div class="column">
+        <div class="column-header">
+            <h2>Column 1</h2>
+            <button class="add-task-button">Add Task</button>
+        </div>
+        <div class="card">
+            <h3>Task</h3>
+            <p>This is a task</p>
+            <button class="edit-task-button">Edit Task</button>
+            <button class="delete-task-button">Delete Task</button>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="column-header">
+            <h2>Column 2</h2>
+            <button class="add-task-button">Add Task</button>
+        </div>
+        <div class="card">
+            <h3>Task</h3>
+            <p>This is a task</p>
+            <button class="edit-task-button">Edit Task</button>
+            <button class="delete-task-button">Delete Task</button>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="column-header">
+            <h2>Column 3</h2>
+            <button class="add-task-button">Add Task</button>
+        </div>
+        <div class="card">
+            <h3>Task</h3>
+            <p>This is a task</p>
+            <button class="edit-task-button">Edit Task</button>
+            <button class="delete-task-button">Delete Task</button>
+        </div>
+    </div>
+
+
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <span id="addCloseButton" class="close">&times;</span>
+            <h2>Add Task</h2>
+            <form>
+                <label for="taskTitle">Title:</label>
+                <input type="text" id="taskTitle" name="taskTitle" required>
+                <label for="taskDescription">Description:</label>
+                <textarea id="taskDescription" name="taskDescription" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <span id="editCloseButton" class="close">&times;</span>
+            <h2>Edit Task</h2>
+            <form>
+                <label for="editTaskTitle">Title:</label>
+                <input type="text" id="editTaskTitle" name="editTaskTitle" required>
+                <label for="editTaskDescription">Description:</label>
+                <textarea id="editTaskDescription" name="editTaskDescription" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    
 <script>
     window.onload = function() {
         var addTaskButtons = document.getElementsByClassName('add-task-button');
@@ -37,77 +109,7 @@
         });
     }
 </script>
-
-
-{% endblock %}
-
-{% block content %}
-<div class="column">
-    <div class="column-header">
-        <h2>Column 1</h2>
-        <button class="add-task-button">Add Task</button>
-    </div>
-    <div class="card">
-        <h3>Task</h3>
-        <p>This is a task</p>
-        <button class="edit-task-button">Edit Task</button>
-        <button class="delete-task-button">Delete Task</button>
-    </div>
-</div>
-
-<div class="column">
-    <div class="column-header">
-        <h2>Column 2</h2>
-        <button class="add-task-button">Add Task</button>
-    </div>
-    <div class="card">
-        <h3>Task</h3>
-        <p>This is a task</p>
-        <button class="edit-task-button">Edit Task</button>
-        <button class="delete-task-button">Delete Task</button>
-    </div>
-</div>
-
-<div class="column">
-    <div class="column-header">
-        <h2>Column 3</h2>
-        <button class="add-task-button">Add Task</button>
-    </div>
-    <div class="card">
-        <h3>Task</h3>
-        <p>This is a task</p>
-        <button class="edit-task-button">Edit Task</button>
-        <button class="delete-task-button">Delete Task</button>
-    </div>
-</div>
-
-<div id="addTaskModal" class="modal">
-    <div class="modal-content">
-        <span id="addCloseButton" class="close">&times;</span>
-        <h2>Add Task</h2>
-        <form>
-            <label for="taskTitle">Title:</label>
-            <input type="text" id="taskTitle" name="taskTitle" required>
-            <label for="taskDescription">Description:</label>
-            <textarea id="taskDescription" name="taskDescription" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-</div>
-
-<div id="editTaskModal" class="modal">
-    <div class="modal-content">
-        <span id="editCloseButton" class="close">&times;</span>
-        <h2>Edit Task</h2>
-        <form>
-            <label for="editTaskTitle">Title:</label>
-            <input type="text" id="editTaskTitle" name="editTaskTitle" required>
-            <label for="editTaskDescription">Description:</label>
-            <textarea id="editTaskDescription" name="editTaskDescription" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-</div>
+</dif>
 
 
 {% endblock %}

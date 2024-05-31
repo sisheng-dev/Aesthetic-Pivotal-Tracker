@@ -12,12 +12,14 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: pink;
+    background: #f8d1ec;
+    /* background: pink; */
 }
 
 .wrapper {
     width: 420px;
-    background: rgb(251, 163, 178);
+    background: pink;
+    /* background: rgb(251, 163, 178); */
     color: #fff;
 }
 

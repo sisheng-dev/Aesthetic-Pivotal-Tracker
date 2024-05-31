@@ -52,14 +52,14 @@ def create_db():
         add_user('dwools@uw.edu', 'password')
 
 
-@app.route('/home', methods=['GET'])
-@login_required
-def showCoffeeShops():
-    if request.method == 'GET' and 'city' in request.args and request.args.get('city') is not None: 
-        session['city'] = request.args.get('city')
-    if 'city' in session:
-        return render_template('home.html', coffeeShops=find_coffee(city=session['city']))
-    return render_template('home.html', coffeeShops=find_coffee())
+# @app.route('/home', methods=['GET'])
+# @login_required
+# def showCoffeeShops():
+#     if request.method == 'GET' and 'city' in request.args and request.args.get('city') is not None: 
+#         session['city'] = request.args.get('city')
+#     if 'city' in session:
+#         return render_template('home.html', coffeeShops=find_coffee(city=session['city']))
+#     return render_template('home.html', coffeeShops=find_coffee())
 
 
 
@@ -126,6 +126,11 @@ def unauthorized():
 def project():
     if request.method == 'GET':
         return render_template('project.html')
+
+@app.route('/home', methods=['GET'])
+def home():
+    if request.method == 'GET':
+        return render_template('home.html')
 
 # @app.route('/new_project', methods=['POST'])
 # def new_project():
