@@ -89,19 +89,22 @@
         var addCloseButton = document.getElementById('addCloseButton');
         for (var i = 0; i < addTaskButtons.length; i++) {
             addTaskButtons[i].addEventListener('click', function() {
-                addTaskModal.style.display = "block";
+                addTaskModal.style.display = "flex";
+                addTaskModal.style.justifyContent = "center";
+                addTaskModal.style.alignItems = "center";
             });
         }
         addCloseButton.addEventListener('click', function() {
             addTaskModal.style.display = "none";
         });
-
         var editTaskButtons = document.getElementsByClassName('edit-task-button');
         var editTaskModal = document.getElementById('editTaskModal');
         var editCloseButton= document.getElementById('editCloseButton');
         for (var i = 0; i < editTaskButtons.length; i++) {
             editTaskButtons[i].addEventListener('click', function() {
-                editTaskModal.style.display = "block";
+                editTaskModal.style.display = "flex";
+                editTaskModal.style.justifyContent = "center";
+                editTaskModal.style.alignItems = "center";
             });
         }
         editCloseButton.addEventListener('click', function() {
