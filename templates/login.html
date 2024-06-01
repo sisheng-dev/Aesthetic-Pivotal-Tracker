@@ -11,17 +11,17 @@
 {% endblock header %}
 
 {% block content %}
-
-
 <div class="wrapper">
-    <form action="/login" method="post" ">
-            <h1>Login</h1>
-            <div class=" input-box">
-        {{ form.email(placeholder = "email") }}
+    <form action="" method="post" ">
+    {{ form.csrf_token }}        
+        <h1>Login</h1>
+        <div class=" input-box">
+    {{ form.email(placeholder = "email") }}
         <i class='bx bxs-user'></i>
 </div>
 <div class="input-box">
     {{ form.password(placeholder = "Password") }}
+    <!-- <span class="form-text">Enter password</span> -->
     <i class='bx bxs-lock-alt'></i>
 </div>
 
@@ -39,4 +39,3 @@
 </div>
 
 {% endblock content %}
-</html>

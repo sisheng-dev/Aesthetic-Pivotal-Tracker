@@ -126,7 +126,7 @@ def project():
         return render_template('project.html')
 
 @app.route('/home', methods=['GET'])
-# @login_required
+@login_required
 def home():
     if request.method == 'GET':
         return render_template('home.html')
@@ -204,7 +204,7 @@ def home():
 
 
 
-
+# When a user logs in with a valid email and password, they should be redirected to /home. If a user is not logged in, they should be redirected to /login. If a user is logged in and tries to access /login, they should be redirected to /home. If a user is not logged in and tries to access /home, they should be redirected to /login. If a user is logged in and tries to access /register, they should be redirected to /home. If a user is not logged in and tries to access /register, they should be redirected to /register. If a user is logged in and tries to access /logout, they should be redirected to /login. If a user is not logged in and tries to access /logout, they should be redirected to /login.
 
 
 # Run the application if this script is being run directly
