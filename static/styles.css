@@ -362,7 +362,7 @@ a:hover {
 
 .container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 200vh;
+  justify-content: space-evenly;
+  padding-right: 50%;
 }

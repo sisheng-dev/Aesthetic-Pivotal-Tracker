@@ -1,22 +1,21 @@
 {% extends 'base.html' %}
+{% block title %} Project {% endblock title%}
+
 {% block header %}
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aesthetic Pivotal Tracker</title>
-<!-- <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
-<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> -->
-
-{% endblock %}
+<h1>Project Title</h1>
+{% endblock header %}
 
 
 
 {% block content %}
 
-<dif class="container">
+<div class="container">
     <div class="column">
         <div class="column-header">
-            <h2>Column 1</h2>
+            <h2>Category 1</h2>
             <button class="add-task-button">Add Task</button>
         </div>
         <div class="card">
@@ -29,7 +28,7 @@
 
     <div class="column">
         <div class="column-header">
-            <h2>Column 2</h2>
+            <h2>Category 2</h2>
             <button class="add-task-button">Add Task</button>
         </div>
         <div class="card">
@@ -42,7 +41,7 @@
 
     <div class="column">
         <div class="column-header">
-            <h2>Column 3</h2>
+            <h2>Category 3</h2>
             <button class="add-task-button">Add Task</button>
         </div>
         <div class="card">
@@ -112,8 +111,20 @@
         });
     }
 </script>
-</dif>
+</div>
 
 
-{% endblock %}
+{% endblock content %}
+<!-- 
+Tasks are held in a database in the back end. Front end will call the backend wiht a for loop, looping through every item on the list and creating a card for that item. When we create a new task, we will send a post request to the backend to add the task to the database. When we delete a task, we will send a delete request to the backend to delete the task from the database. When we edit a task, we will send a put request to the backend to update the task in the database.
 
+We send the data to the back end to populate the database. Then we call the database to get the data and return the database data to the front end again and populate the front end. We will use AJAX to send the data to the back end. We will use fetch
+
+A dicitonary is a set of key-value pairs. 
+{
+title: title of task
+description: description of task
+category: category of task
+status: status of task
+deadline: deadline of task -->
+}
