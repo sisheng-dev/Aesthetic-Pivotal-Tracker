@@ -10,6 +10,7 @@
 
 
 
+
 {% block content %}
 
 <div class="container">
@@ -19,10 +20,17 @@
             <button class="add-task-button">Add Task</button>
         </div>
         <div class="card">
+            <div class="card-header">
+                <button class="dropdown-button">&#8942;</button>
+                <div class="dropdown-content">
+                    <a class="edit-task-option">Edit Task</a>
+                    <a class="delete-task-option">Delete Task</a>
+                    <a class="mark-complete-option">Mark as Complete</a>
+                </div>
+            </div>
             <h3>Task</h3>
             <p>This is a task</p>
-            <button class="edit-task-button">Edit Task</button>
-            <button class="delete-task-button">Delete Task</button>
+            <p>Deadline: <span class="deadline">2022-12-31</span></p>
         </div>
     </div>
 
@@ -32,10 +40,17 @@
             <button class="add-task-button">Add Task</button>
         </div>
         <div class="card">
+            <div class="card-header">
+                <button class="dropdown-button">&#8942;</button>
+                <div class="dropdown-content">
+                    <a class="edit-task-option">Edit Task</a>
+                    <a class="delete-task-option">Delete Task</a>
+                    <a class="mark-complete-option">Mark as Complete</a>
+                </div>
+            </div>
             <h3>Task</h3>
             <p>This is a task</p>
-            <button class="edit-task-button">Edit Task</button>
-            <button class="delete-task-button">Delete Task</button>
+            <p>Deadline: <span class="deadline">2022-12-31</span></p>
         </div>
     </div>
 
@@ -45,10 +60,17 @@
             <button class="add-task-button">Add Task</button>
         </div>
         <div class="card">
+            <div class="card-header">
+                <button class="dropdown-button">&#8942;</button>
+                <div class="dropdown-content">
+                    <a class="edit-task-option">Edit Task</a>
+                    <a class="delete-task-option">Delete Task</a>
+                    <a class="mark-complete-option">Mark as Complete</a>
+                </div>
+            </div>
             <h3>Task</h3>
             <p>This is a task</p>
-            <button class="edit-task-button">Edit Task</button>
-            <button class="delete-task-button">Delete Task</button>
+            <p>Deadline: <span class="deadline">2022-12-31</span></p>
         </div>
     </div>
 
@@ -62,6 +84,8 @@
                 <input type="text" id="taskTitle" name="taskTitle" required>
                 <label for="taskDescription">Description:</label>
                 <textarea id="taskDescription" name="taskDescription" required></textarea>
+                <label for="taskDeadline">Deadline:</label>
+                <input type="date" id="taskDeadline" name="taskDeadline" required>
                 <button type="submit">Submit</button>
             </form>
         </div>
@@ -76,6 +100,8 @@
                 <input type="text" id="editTaskTitle" name="editTaskTitle" required>
                 <label for="editTaskDescription">Description:</label>
                 <textarea id="editTaskDescription" name="editTaskDescription" required></textarea>
+                <label for="editTaskDeadline">Deadline:</label>
+                <input type="date" id="editTaskDeadline" name="editTaskDeadline" required>
                 <button type="submit">Submit</button>
             </form>
         </div>
@@ -109,12 +135,46 @@
         editCloseButton.addEventListener('click', function() {
             editTaskModal.style.display = "none";
         });
+
+        var dropdownButtons = document.getElementsByClassName('dropdown-button');
+        var dropdownContents = document.getElementsByClassName('dropdown-content');
+        var editTaskOptions = document.getElementsByClassName('edit-task-option');
+        var deleteTaskOptions = document.getElementsByClassName('delete-task-option');
+        var markCompleteOptions = document.getElementsByClassName('mark-complete-option');
+        for (var i = 0; i < dropdownButtons.length; i++) {
+            dropdownButtons[i].addEventListener('click', function() {
+                var dropdownContent = this.nextElementSibling;
+                dropdownContent.classList.toggle('show');
+            });
+        }
+        for (var i = 0; i < editTaskOptions.length; i++) {
+            editTaskOptions[i].addEventListener('click', function() {
+                editTaskModal.style.display = "flex";
+                editTaskModal.style.justifyContent = "center";
+                editTaskModal.style.alignItems = "center";
+            });
+        }
+        for (var i = 0; i < deleteTaskOptions.length; i++) {
+            deleteTaskOptions[i].addEventListener('click', function() {
+                // Delete the task from the database
+                // Remove the task card from the front end
+            });
+        }
+        for (var i = 0; i < markCompleteOptions.length; i++) {
+            markCompleteOptions[i].addEventListener('click', function() {
+                var card = this.parentNode.parentNode.parentNode;
+                card.classList.toggle('completed');
+                // Update the status of the task in the database
+            });
+        }
     }
 </script>
 </div>
 
 
 {% endblock content %}
+
+
 <!-- 
 Tasks are held in a database in the back end. Front end will call the backend wiht a for loop, looping through every item on the list and creating a card for that item. When we create a new task, we will send a post request to the backend to add the task to the database. When we delete a task, we will send a delete request to the backend to delete the task from the database. When we edit a task, we will send a put request to the backend to update the task in the database.
 
@@ -126,5 +186,6 @@ title: title of task
 description: description of task
 category: category of task
 status: status of task
-deadline: deadline of task -->
-}
+deadline: deadline of task
+} -->
+

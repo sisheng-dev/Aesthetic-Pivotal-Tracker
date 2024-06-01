@@ -71,12 +71,11 @@ def login():
             email = form.email.data
             pw = form.password.data
             session['email'] = email
-            session['city']='Tacoma'
             user = UserModel.query.filter_by(email=email).first()
             if user is not None and user.check_password(pw):
                 login_user(user)
                 # return render_template('home1.html', projects=ProjectModel.query.all())
-                return render_template('home.html', coffeeShops=find_coffee())
+                return render_template('home.html')
             else:
                 flash('Invalid email or password')
                 logout_user()
@@ -92,7 +91,6 @@ def register():
             email = form.email.data
             pw = form.password.data
             session['email'] = email
-            session['city']='Tacoma'
             user = UserModel.query.filter_by(email=email).first()
             if user is None:
                 add_user(email, pw)
@@ -128,6 +126,7 @@ def project():
         return render_template('project.html')
 
 @app.route('/home', methods=['GET'])
+# @login_required
 def home():
     if request.method == 'GET':
         return render_template('home.html')
