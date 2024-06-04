@@ -23,24 +23,57 @@
       <p>Project Description(?) or Deadline</p>
       <a href="/project"><button>View Project</button></a>
     </div>
+
     <div class="card">
-      <h3>Project 04</h3>
-      <p>Project Description(?) or Deadline</p>
-      <a href="/project"><button>View Project</button></a>
+      <button class="add-project-button">Add Project</button>
+    </div>
+
+    <div id="addProjectModal" class="modal">
+      <div class="modal-content">
+        <span id="addCloseButton" class="close">&times;</span>
+        <form action="" method="post">
+          {{ form.csrf_token }}
+          <h2>Add Project</h2>
+          <p>Project Description(?) or Deadline</p>
+          <h3>Title</h3>>
+          <div class="input-box">
+            {{ form.projectTitle(placeholder = "Title") }}
+            <i class='bx bxs-user'></i>
+        </form>
+        <button type="submit">Submit</button>
+      </div>
     </div>
   </div>
+</section>
+
+<section class="main-course">
+  <h1>My Calendar</h1>
 
 
-  <section class="main-course">
-    <h1>My Calendar</h1>
+  <div class="calendar-container">
+    <div id="calendar"></div>
+  </div>
+</section>
 
-
-    <div class="calendar-container">
-      <div id="calendar"></div>
-    </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-  <script src="{{ url_for('static',filename='script.js') }}"></script>
-  {% endblock %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+<script src="{{ url_for('static',filename='script.js') }}"></script>
+<script>
+  window.onload = function () {
+    var addProjectButtons = document.getElementsByClassName('add-project-button');
+    var addProjectModal = document.getElementById('addProjectModal');
+    var addCloseButton = document.getElementById('addCloseButton');
+    for (var i = 0; i < addProjectButtons.length; i++) {
+      addProjectButtons[i].onclick = function () {
+        addProjectModal.style.display = 'flex';
+        addProjectModal.style.justifyContent = 'center';
+        addProjectModal.style.alignItems = 'center';
+      }
+    }
+    addCloseButton.onclick = function () {
+      addProjectModal.style.display = 'none';
+    }
+  }
+</script>
+{% endblock %}

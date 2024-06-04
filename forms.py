@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, EmailField, PasswordField
+from wtforms import StringField, SubmitField, EmailField, PasswordField, DateField
 from wtforms.validators import DataRequired, Email, ValidationError, Length, EqualTo
 
 class LoginForm(FlaskForm):
@@ -12,10 +12,12 @@ class RegisterForm(FlaskForm):
     confirm_password = PasswordField('confirm_password', validators=[DataRequired(), Length(min=6, max=40)])
     
 class ProjectForm(FlaskForm):
-    project = StringField('project', validators=[DataRequired(), Length(min=1, max=40)])
-    submit = SubmitField('submit')
+    projectTitle = StringField('Title', validators=[DataRequired(), Length(min=1, max=40)])
+    # url = StringField(f'/{projectTitle}', validators=[DataRequired()])
+    # submit = SubmitField('submit')
 
 class TaskForm(FlaskForm):
     title = StringField('task', validators=[DataRequired(), Length(min=1, max=100)])
     description = StringField('description', validators=[DataRequired(), Length(min=1, max=500)])
+    end_date = DateField('end_date', validators=[DataRequired()])
     submit = SubmitField('submit')

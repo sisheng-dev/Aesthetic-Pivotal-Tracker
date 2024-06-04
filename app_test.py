@@ -4,7 +4,7 @@ import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from forms import LoginForm, RegisterForm, ProjectForm, TaskForm
 from yelp import find_coffee
-from flask_login import login_user, logout_user, login_required 
+from flask_login import login_user, logout_user, login_required, current_user 
 from models import db, login_manager, UserModel #, TaskModel, ProjectModel
 
 # Create a new Flask application instance
@@ -31,6 +31,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 login_manager.init_app(app)
 
+@app.route('/')
+def blank():
+    return redirect(url_for('home'))
+
+
 #add user routine
 def add_user(email, password):
     existing_user = UserModel.query.filter_by(email=email).first()
@@ -46,10 +51,11 @@ def add_user(email, password):
 
 # create database with a test user
 @app.before_first_request
-def create_db():
+def create_user_db():
     if (not os.path.exists('login.db')):
         db.create_all()
         add_user('dwools@uw.edu', 'password')
+
 
 
 # @app.route('/home', methods=['GET'])
@@ -83,6 +89,18 @@ def login():
     return render_template('login.html',form=form)
 
 
+@app.route('/home', methods=['GET', 'POST'])
+def new_project():
+    form = ProjectForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            title = form.projectTitle.data
+            session['Title'] = title
+            db.session.add(project)
+            db.session.commit()
+        flash('Project added')
+    return render_template('home.html', form=form)
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form=RegisterForm()
@@ -97,7 +115,7 @@ def register():
                 user = UserModel.query.filter_by(email=email).first()
                 login_user(user)
                 # return render_template('home1.html', projects=ProjectModel.query.all())
-                return render_template('home.html', coffeeShops=find_coffee())
+                return render_template('home.html')
             else:
                 flash('Email already exists')
                 return redirect(url_for('register'))                
@@ -131,29 +149,18 @@ def home():
     if request.method == 'GET':
         return render_template('home.html')
 
-# @app.route('/new_project', methods=['POST'])
-# def new_project():
-#     form = ProjectForm()
-#     if request.method == 'POST':
-#         project = form.project.data
-#         session['project'] = project
-#         db.session.add(project)
-#         db.session.commit()
-#         flash('Project added')
-#     render_template('home.html', project=form)
-
-# @app.route('/new_task', methods=['POST'])
-# def new_task():
-#     form = TaskForm()
-#     if request.method == 'POST':
-#         task = form.task.data
-#         session['task'] = task
-#         session['completion_status'] = form.completion_status.data
-#         task.user_id = current_user.id
-#         db.session.add(task)
-#         db.session.commit()
-#         flash('Task added')        
-#     return render_template('project.html', task=form)
+@app.route('/new_task', methods=['POST'])
+def new_task():
+    form = TaskForm()
+    if request.method == 'POST':
+        task = form.task.data
+        session['task'] = task
+        session['completion_status'] = form.completion_status.data
+        task.user_id = current_user.id
+        db.session.add(task)
+        db.session.commit()
+        flash('Task added')        
+    return render_template('project.html', task=form)
 
 # @app.route('/project', methods=['GET'])
 # def get_task_list():

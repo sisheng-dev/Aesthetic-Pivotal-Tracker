@@ -16,9 +16,9 @@
   <body>
     <div class="sidebar">
       <ul>
-        <li><a href="#" class="logo">
-            <img src="Project LOGO.jpg" alt="">
-            <span class="nav-item">DashBoard</span>
+        <li><a href="{{ url_for('home') }}" class="logo">
+            <img src="{{ url_for('static',filename='Project LOGO.jpg') }}"" alt=""">
+            <span class="nav-item">Aesthetic</span>
           </a></li>
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('home') }}">Home</a>
@@ -32,9 +32,6 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('home') }}">Settings</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('login') }}">Log in</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('login') }}">Log out</a>

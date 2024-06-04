@@ -9,4 +9,4 @@ COPY yelp.py /usr/local/bin/yelp.py
 COPY models.py /usr/local/bin/models.py
 COPY forms.py /usr/local/bin/forms.py
 WORKDIR /usr/local/bin
-CMD app.py
+CMD ["python3", "app.py"]
