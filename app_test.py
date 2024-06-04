@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # Import the necessary modules
 import os
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for, flash, create_task_database, generate_unique_url, 
 from forms import LoginForm, RegisterForm, ProjectForm, TaskForm
 from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required, current_user 
-from models import db, login_manager, UserModel #, TaskModel, ProjectModel
+from models import db, login_manager, UserModel, TaskModel, ProjectModel
 
 # Create a new Flask application instance
 app = Flask(__name__)
@@ -88,17 +88,23 @@ def login():
                 return redirect(url_for('login'))
     return render_template('login.html',form=form)
 
-
 @app.route('/home', methods=['GET', 'POST'])
+@login_required
 def new_project():
     form = ProjectForm()
     if request.method == 'POST':
         if form.validate_on_submit():
             title = form.projectTitle.data
-            session['Title'] = title
+            # Generate a unique URL for the project
+            url = generate_unique_url()
+            # Create a new project in the database
+            project = ProjectModel(title=title, url=url)
             db.session.add(project)
             db.session.commit()
-        flash('Project added')
+            # Create an empty database of tasks for the project
+            create_task_database(project)
+            flash('Project added')
+            return redirect(url_for('home'))
     return render_template('home.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -150,17 +156,24 @@ def home():
         return render_template('home.html')
 
 @app.route('/new_task', methods=['POST'])
+@login_required
 def new_task():
     form = TaskForm()
     if request.method == 'POST':
-        task = form.task.data
-        session['task'] = task
-        session['completion_status'] = form.completion_status.data
-        task.user_id = current_user.id
-        db.session.add(task)
-        db.session.commit()
-        flash('Task added')        
-    return render_template('project.html', task=form)
+        if form.validate_on_submit():
+            title = form.title.data
+            description = form.description.data
+            due_date = form.due_date.data
+            completion_status = False
+            project = ProjectModel.query.get(session['project'])
+            project_url = ProjectModel.query.get(session['project']).url
+            task = TaskModel(title=title, description=description, due_date=due_date, completion_status=completion_status)
+            project.tasks.append(task)
+            db.session.commit()
+            flash('Task added')
+    return render_template(f'{project_url}', project=project)
+
+
 
 # @app.route('/project', methods=['GET'])
 # def get_task_list():
@@ -213,6 +226,8 @@ def new_task():
 
 # When a user logs in with a valid email and password, they should be redirected to /home. If a user is not logged in, they should be redirected to /login. If a user is logged in and tries to access /login, they should be redirected to /home. If a user is not logged in and tries to access /home, they should be redirected to /login. If a user is logged in and tries to access /register, they should be redirected to /home. If a user is not logged in and tries to access /register, they should be redirected to /register. If a user is logged in and tries to access /logout, they should be redirected to /login. If a user is not logged in and tries to access /logout, they should be redirected to /login.
 
+
+# Write a method called new_project() that will add a new project to the database. This method should be accessible via the /home route. This method should only be accessible to logged in users. If a user is not logged in, they should be redirected to /login. If a user is logged in and tries to access /login, they should be redirected to /home. If a user is logged in and tries to access /register, they should be redirected to /home. If a user is not logged in and tries to access /register, they should be redirected to /register. If a user is logged in and tries to access /logout, they should be redirected to /home. If a user is not logged in and tries to access /logout, they should be redirected to /login. The method should create an empty database of tasks specific for the given project. The method should also add the project to the database. The project should have a title and a unique URL. The method should return a template called home.html with the project added to the list of projects. The project should be displayed as a link that will take the user to the project page. The project page should display all the tasks associated with the project. The project page should have a form to add a new task to the project. The task should have a title, description, and end date. The task should have a completion status that defaults to False. The task should have a button to mark the task as complete. The task should have a button to delete the task. The project page should have a button to delete the project. The project page should have a button to return to the home page. The home page should have a button to log out. The home page should have a button to add a new project. The home page should have a button to view all projects. The home page should have a button to view all tasks. The home page should have a button to view all completed tasks. The home page should have a button to view all incomplete tasks. The home page should have a button to view all tasks due today. The home page should have a button to view all tasks due this week. The home page should have a button to view all tasks due this month. The home page should have a button to view all tasks due this year. The home page should have a button to view all tasks due in the future. The home page should have a button to view all tasks due in the past. The home page should have a button to view all tasks due in the next hour. The home page should have a button to view all tasks due in the next day. The home page should have a button to view all tasks due in the next week. The home page should have a button to view all tasks due in the next month. The home page should have a button to view all tasks due in the next year. The home page should have a button to view all tasks due in the past hour. The home page should have a button to view all tasks due in the past day. The home page should have a button to view all tasks due in the past week. The home page should have a button to view all tasks due in the past month. The home page should have a button to view all tasks due in the past year.
 
 # Run the application if this script is being run directly
 if __name__ == '__main__':
