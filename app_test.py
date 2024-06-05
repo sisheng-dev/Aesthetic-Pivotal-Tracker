@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Import the necessary modules
 import os
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
 from forms import LoginForm, RegisterForm, ProjectForm, TaskForm
 from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required, current_user 
@@ -57,6 +57,45 @@ def create_user_db():
         db.create_all()
         add_user('dwools@uw.edu', 'password')
 
+@app.route('/reset_db')
+def reset_db():
+    db.drop_all()
+    db.create_all()
+    add_user('dwools@uw.edu', 'password')
+    return "Database reset"        
+
+@app.route('/view_users', methods=['GET'])
+def view_users():
+    # Query all users
+    users = UserModel.query.all()
+
+    # Convert the results to a list of dictionaries so it can be converted to JSON
+    users_list = [user.to_dict() for user in users]
+
+    return jsonify({'users': users_list})
+
+@app.route('/view_projects', methods=['GET'])
+def view_projects():
+    # Query all projects
+    projects = ProjectModel.query.all()
+    if not projects:
+        return "no projects found"
+    else:
+    # Convert the results to a list of dictionaries so it can be converted to JSON
+        projects_list = [project.to_dict() for project in projects]
+        return jsonify({'projects': projects_list})
+    
+
+@app.route('/view_tasks', methods=['GET'])
+def view_tasks():
+    # Query all tasks
+    tasks = TaskModel.query.all()
+
+    # Convert the results to a list of dictionaries so it can be converted to JSON
+    tasks_list = [task.to_dict() for task in tasks]
+
+    return jsonify({'tasks': tasks_list})
+
 
 
 # @app.route('/home', methods=['GET'])
@@ -105,6 +144,9 @@ def login():
     return render_template('login.html', login_form=login_form)
 
 
+
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     register_form=RegisterForm()
@@ -124,19 +166,21 @@ def register():
             else:
                 flash('Email already exists')
                 return redirect(url_for('register'))                
-    return render_template('registration.html',form=register_form)
+    return render_template('registration.html',register_form=register_form)
 
 
 
 @app.route('/home', methods=['GET'])
+@login_required
 def home():
+    project_form = ProjectForm()
     if request.method == 'GET':
-        project_form = request.args.get('project_form')
-        login_form = request.args.get('login_form')
-        projects = request.args.get('projects')
-        project_title = project_form.projectTitle.data
-    return render_template('home.html', project_form=project_form, login_form=login_form, projects=projects)
-        # return render_template('home.html')
+        # login_form = request.args.get('login_form')
+        # projects = request.args.get('projects')
+        # project_title = project_form.projectTitle.data
+    # return render_template('home.html', project_form=project_form, login_form=login_form, projects=projects)
+        return render_template('home.html', project_form=project_form)
+
 
 
 
@@ -150,22 +194,6 @@ def generate_url_suffix(title):
     return title
 
 
-@app.route('/home', methods=['GET', 'POST'])
-def new_project():
-    project_form = ProjectForm()
-    if request.method == 'POST':
-        if project_form.validate_on_submit():
-            title = project_form.projectTitle.data
-            # Generate a unique URL for the project
-            # url = generate_unique_url()
-            # Create a new project in the database
-            # url_suffix = generate_url_suffix(title)
-            project = ProjectModel(title=title) #, url=url)
-            db.session.add(project)
-            db.session.commit()
-            # Create an empty database of tasks for the project
-            flash('Project added')
-    return render_template('home.html', form=project_form)
 
 
 @app.route('/logout', methods=['GET'])
@@ -177,7 +205,6 @@ def logout():
     print(session)
     session.clear()
     print(session)
-   
     return redirect('/login') 
 
 @login_manager.unauthorized_handler
@@ -191,24 +218,44 @@ def project():
         return render_template('project.html')
 
 
-
-@app.route('/new_task', methods=['POST'])
-@login_required
-def new_task():
-    form = TaskForm()
+@app.route('/home', methods=['GET', 'POST'])
+def new_project():
+    project_form = ProjectForm()
     if request.method == 'POST':
-        if form.validate_on_submit():
-            title = form.title.data
-            description = form.description.data
-            due_date = form.due_date.data
+        if project_form.validate_on_submit():
+            title = project_form.projectTitle.data
+            user_id = UserModel.query.filter_by(email=session['email']).first().id
+            # Generate a unique URL for the project
+            url = generate_url_suffix(title)
+            # Create a new project in the database
+            project = ProjectModel(project=title, user_id=user_id, url=url)
+            flash(f'Project added: {project.project}')
+            flash(f'UserID: {project.user_id}')
+            db.session.add(project)
+            db.session.commit()
+            # Create an empty database of tasks for the project
+            # flash('Project added')
+        else:
+            return "Form did not validate"
+    return render_template('home.html', project_form=project_form)
+
+@app.route('/project', methods=['POST'])
+def new_task():
+    task_form = TaskForm()
+    if request.method == 'POST':
+        if task_form.validate_on_submit():
+            title = task_form.title.data
+            description = task_form.description.data
+            deadline = task_form.deadline.data
             completion_status = False
-            project = ProjectModel.query.get(session['project'])
+            project_id =  ProjectModel.query.get(session['project']).id
             project_url = ProjectModel.query.get(session['project']).url
-            task = TaskModel(title=title, description=description, due_date=due_date, completion_status=completion_status)
-            project.tasks.append(task)
+            task = TaskModel(task=title, description=description, deadline=deadline, completion_status=completion_status, project_id=project_id, user_id=current_user.id)
+            # project.tasks.append(task)
+            db.session.add(task)
             db.session.commit()
             flash('Task added')
-    return render_template(f'{project_url}', project=project)
+    return render_template(f'{project_url}', task_form=task_form)
 
 
 

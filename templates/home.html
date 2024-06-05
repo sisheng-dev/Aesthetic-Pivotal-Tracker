@@ -38,7 +38,7 @@
         <div class="add-project-card">
           <button id="addProjectButton" class="add-project-button" onclick="showInput()">Add Project</button>
           <form id="projectForm" action="" method="post" style="display: none;">
-            {{ login_form.csrf_token }}
+            {{ project_form.csrf_token }}
             <div id="project-title-input" class="input-box">
               {{ project_form.projectTitle(placeholder = "Title") }}
               <i class='bx bxs-user'></i>
