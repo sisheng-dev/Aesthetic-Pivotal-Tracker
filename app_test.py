@@ -127,10 +127,7 @@ def login():
             session['email'] = email
             user = UserModel.query.filter_by(email=email).first()
             user_id = user.id
-            try:
-                projects=ProjectModel.query.filter_by(user_id=user_id).all()
-            except:
-                projects = []
+            projects=ProjectModel.query.filter_by(user_id=user_id).all()
             if user is not None and user.check_password(pw):
                 login_user(user)
                 # return render_template('home1.html', projects=ProjectModel.query.all())
@@ -170,19 +167,28 @@ def register():
 
 
 
-@app.route('/home', methods=['GET'])
+@app.route('/home', methods=['GET', 'POST'])
 @login_required
 def home():
     project_form = ProjectForm()
+    projects = ProjectModel.query.filter_by(user_id=current_user.id).all()
     if request.method == 'GET':
         # login_form = request.args.get('login_form')
         # projects = request.args.get('projects')
         # project_title = project_form.projectTitle.data
     # return render_template('home.html', project_form=project_form, login_form=login_form, projects=projects)
-        return render_template('home.html', project_form=project_form)
+        return render_template('home.html', project_form=project_form, projects=projects)
+  
 
 
-
+@app.route('/delete-project/<int:project_id>', methods=['POST'])
+def delete_project(project_id):
+    project = ProjectModel.query.get(project_id)
+    if project:
+        db.session.delete(project)
+        db.session.commit()
+        flash('Project deleted')
+    return redirect(url_for('home'))
 
 def generate_url_suffix(title):
     # Convert title to lowercase
@@ -216,6 +222,10 @@ def unauthorized():
 def project():
     if request.method == 'GET':
         return render_template('project.html')
+    
+@app.route('/session', methods=['GET'])
+def session_view():
+    return jsonify(session)
 
 
 @app.route('/home', methods=['GET', 'POST'])
@@ -237,7 +247,7 @@ def new_project():
             # flash('Project added')
         else:
             return "Form did not validate"
-    return render_template('home.html', project_form=project_form)
+    return redirect(url_for('home', project_form=project_form))
 
 @app.route('/project', methods=['POST'])
 def new_task():
@@ -295,12 +305,14 @@ def new_task():
 #         flash('Task deleted')
 #     return redirect(url_for('home'))
 
-# @app.route('/delete_project', methods=['POST'])
+# @app.route('/delete-project', methods=['GET'])
 # def delete_project():
-#     project = ProjectModel.query.get(session['project'])
-#     if request.method == 'POST':
-#         db.session.delete(project)
-#         db.session.commit()
+#     project = ProjectModel.query.get(project.id)
+#     if request.method == 'GET':
+#         flash(f'{project.project}')
+
+#         # db.session.delete(project)
+#         # db.session.commit()
 #         flash('Project deleted')
 #     return redirect(url_for('home'))
 

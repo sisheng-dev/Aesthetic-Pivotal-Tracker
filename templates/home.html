@@ -9,19 +9,24 @@
       <i class="fas fa-user-cog"></i>
     </div>
     <div class="main-skills">
-      {% for project in session['projects'] %}
-      <div class="card">
-        <h3>{{ project['title'] }}</h3>
-        <a href="/project/{{ project['id'] }}"><button>View Project</button></a>
-        
-      {% endfor %}
+       {% for project in projects %}
+          <div class="card">
+              <div>
+                  <h3>{{ project.project }}</h3>
+                  <a href="/project/{{ project.url }}"><button>View Project</button></a>
+              </div>
+              <div>
+                  <button class="delete-project-button" onclick="deleteProject({{ project.id }})">Delete</button>
+              </div>
+          </div>
+       {% endfor %}
       <!-- </div>
       <div class="card">
         <h3>Project 01</h3>
         <p>Project Description(?) or Deadline</p>
         <a href="/project"><button>View Project</button></a>
       </div> -->
-        <!-- <div class="card">
+      <!-- <div class="card">
           <h3>Project 02</h3>
           <p>Project Description(?) or Deadline</p>
           <a href="/project"><button>View Project</button></a>
@@ -103,7 +108,16 @@
     document.getElementById('addProjectButton').style.display = 'none';
     document.getElementById('projectForm').style.display = 'flex';
   }
-
+  function deleteProject(projectId) {
+    fetch('/delete-project/' + projectId, {
+        method: 'POST',
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        }
+    });
+}
 </script>
 
 {% endblock %}
