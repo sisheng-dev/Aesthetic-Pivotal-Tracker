@@ -1,14 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
 
 {% block content %}
+<!-- Projects section -->
 <section class="main">
   <div class="main-top">
     <h1>Projects</h1>
     <i class="fas fa-user-cog"></i>
   </div>
   <div class="main-skills">
+    {% for project in session['projects'] %}
     <div class="card">
+      <h3>{{ project['title'] }}</h3>
+      <p>{{ project['user_id'] }}</p>
+      <a href="/project/{{ project['id'] }}"><button>View Project</button></a>
+    <!-- <div class="card">
       <h3>Project 01</h3>
       <p>Project Description(?) or Deadline</p>
       <a href="/project"><button>View Project</button></a>
@@ -22,12 +27,25 @@
       <h3>Project 03</h3>
       <p>Project Description(?) or Deadline</p>
       <a href="/project"><button>View Project</button></a>
-    </div>
+    </div> -->
+    {% endfor %}
 
-    <div class="card">
-      <button class="add-project-button">Add Project</button>
+    <div id="addProjectCard" class="card">
+      <div class="add-project-card">
+        <button id="addProjectButton" class="add-project-button" onclick="showInput()">Add Project</button>
+        <form id="projectForm" action="" method="post" style="display: none;">
+          {{ form.csrf_token }}
+          <div id="project-title-input" class="input-box">
+            {{ form.projectTitle(placeholder = "Title") }}
+            <i class='bx bxs-user'></i>
+          </div>
+          <button id="new-project-submit-button" class="submit-button" type="submit">Submit</button>
+        </form>
+      </div>
     </div>
+   
 
+<!-- 
     <div id="addProjectModal" class="modal">
       <div class="modal-content">
         <span id="addCloseButton" class="close">&times;</span>
@@ -35,21 +53,20 @@
           {{ form.csrf_token }}
           <h2>Add Project</h2>
           <p>Project Description(?) or Deadline</p>
-          <h3>Title</h3>>
           <div class="input-box">
             {{ form.projectTitle(placeholder = "Title") }}
             <i class='bx bxs-user'></i>
+          </div>
         </form>
         <button type="submit">Submit</button>
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
+<!-- Calendar section -->
 <section class="main-course">
   <h1>My Calendar</h1>
-
-
   <div class="calendar-container">
     <div id="calendar"></div>
   </div>
@@ -60,20 +77,38 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 <script src="{{ url_for('static',filename='script.js') }}"></script>
 <script>
-  window.onload = function () {
-    var addProjectButtons = document.getElementsByClassName('add-project-button');
-    var addProjectModal = document.getElementById('addProjectModal');
-    var addCloseButton = document.getElementById('addCloseButton');
-    for (var i = 0; i < addProjectButtons.length; i++) {
-      addProjectButtons[i].onclick = function () {
-        addProjectModal.style.display = 'flex';
-        addProjectModal.style.justifyContent = 'center';
-        addProjectModal.style.alignItems = 'center';
-      }
-    }
-    addCloseButton.onclick = function () {
-      addProjectModal.style.display = 'none';
-    }
-  }
+  // window.onload = function () {
+  //   var addProjectCard = document.getElementById('addProjectCard');
+  //   var addProjectButton = document.getElementsByClassName('add-project-button');
+  //   var addProjectTitle = document.getElementById('project-title-input');
+  //   var addProjectSubmitButton = document.getElementByID('add-project-submit-button');
+    
+  //   var addProjectModal = document.getElementById('addProjectModal');
+
+  //   var addCloseButton = document.getElementById('addCloseButton');
+  //   for (var i = 0; i < addProjectButtons.length; i++) {
+  //     addProjectButtons[i].onclick = function () {
+  //       addProjectModal.style.display = 'flex';
+  //       addProjectModal.style.justifyContent = 'center';
+  //       addProjectModal.style.alignItems = 'center';
+  //     }
+  //   }
+  //   for (var i = 0; i < addProjectButtons.length; i++) {
+  //     addProjectButtons[i].onclick = function () {
+  //       addProjectButton.style.display = 'none';
+  //       addProjectTitle.style.display = 'flex';
+  //       addProjectSubmitButton.style.display = 'flex';
+        
+  //   }
+  //   addCloseButton.onclick = function () {
+  //     addProjectModal.style.display = 'none';
+  //   }
+  // }
+  function showInput() {
+  document.getElementById('addProjectButton').style.display = 'none';
+  document.getElementById('projectForm').style.display = 'flex';
+}
+
 </script>
+
 {% endblock %}

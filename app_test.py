@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # Import the necessary modules
 import os
-from flask import Flask, render_template, request, session, redirect, url_for, flash, create_task_database, generate_unique_url, 
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 from forms import LoginForm, RegisterForm, ProjectForm, TaskForm
 from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required, current_user 
 from models import db, login_manager, UserModel, TaskModel, ProjectModel
+import re
 
 # Create a new Flask application instance
 app = Flask(__name__)
@@ -67,6 +68,11 @@ def create_user_db():
 #         return render_template('home.html', coffeeShops=find_coffee(city=session['city']))
 #     return render_template('home.html', coffeeShops=find_coffee())
 
+@app.route('/kanban', methods=['GET'])
+def kanban():
+    if request.method == 'GET':
+        return render_template('kanban.html')
+    
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -88,6 +94,17 @@ def login():
                 return redirect(url_for('login'))
     return render_template('login.html',form=form)
 
+
+
+def generate_url_suffix(title):
+    # Convert title to lowercase
+    title = title.lower()
+    # Replace spaces with hyphens
+    title = title.replace(' ', '-')
+    # Remove non-alphanumeric characters (except hyphens)
+    title = re.sub(r'[^a-z0-9-]', '', title)
+    return title
+
 @app.route('/home', methods=['GET', 'POST'])
 @login_required
 def new_project():
@@ -96,13 +113,13 @@ def new_project():
         if form.validate_on_submit():
             title = form.projectTitle.data
             # Generate a unique URL for the project
-            url = generate_unique_url()
+            # url = generate_unique_url()
             # Create a new project in the database
-            project = ProjectModel(title=title, url=url)
+            url_suffix = generate_url_suffix(title)
+            project = ProjectModel(title=title, url=url_suffix) #, url=url)
             db.session.add(project)
             db.session.commit()
             # Create an empty database of tasks for the project
-            create_task_database(project)
             flash('Project added')
             return redirect(url_for('home'))
     return render_template('home.html', form=form)
@@ -125,7 +142,7 @@ def register():
             else:
                 flash('Email already exists')
                 return redirect(url_for('register'))                
-    return render_template('login.html',form=form)
+    return render_template('registration.html',form=form)
 
 @app.route('/logout', methods=['GET'])
 def logout():

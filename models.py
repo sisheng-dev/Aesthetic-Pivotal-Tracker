@@ -32,3 +32,5 @@ class ProjectModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
+    url_suffix = db.Column(db.String(100), nullable=False)
+
