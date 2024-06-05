@@ -3,7 +3,7 @@
 {% block content %}
 <!-- Projects section -->
 <section class="main">
-  <div class="row-12">
+  <div class="col-12">
     <div class="main-top">
       <h1>Projects</h1>
       <i class="fas fa-user-cog"></i>
@@ -12,14 +12,16 @@
       {% for project in session['projects'] %}
       <div class="card">
         <h3>{{ project['title'] }}</h3>
-        <p>{{ project['user_id'] }}</p>
         <a href="/project/{{ project['id'] }}"><button>View Project</button></a>
-        <div class="card">
-          <h3>Project 01</h3>
-          <p>Project Description(?) or Deadline</p>
-          <a href="/project"><button>View Project</button></a>
-        </div>
-        <div class="card">
+        
+      {% endfor %}
+      <!-- </div>
+      <div class="card">
+        <h3>Project 01</h3>
+        <p>Project Description(?) or Deadline</p>
+        <a href="/project"><button>View Project</button></a>
+      </div> -->
+        <!-- <div class="card">
           <h3>Project 02</h3>
           <p>Project Description(?) or Deadline</p>
           <a href="/project"><button>View Project</button></a>
@@ -29,17 +31,16 @@
           <p>Project Description(?) or Deadline</p>
           <a href="/project"><button>View Project</button></a>
         </div>
-      </div>
+      </div> -->
 
-      {% endfor %}
 
       <div id="addProjectCard" class="card">
         <div class="add-project-card">
           <button id="addProjectButton" class="add-project-button" onclick="showInput()">Add Project</button>
           <form id="projectForm" action="" method="post" style="display: none;">
-            {{ form.csrf_token }}
+            {{ login_form.csrf_token }}
             <div id="project-title-input" class="input-box">
-              {{ form.projectTitle(placeholder = "Title") }}
+              {{ project_form.projectTitle(placeholder = "Title") }}
               <i class='bx bxs-user'></i>
             </div>
             <button id="new-project-submit-button" class="submit-button" type="submit">Submit</button>
@@ -52,7 +53,7 @@
 
 <!-- Calendar section -->
 <section class="main-course">
-  <div class="row-12">
+  <div class="col-12">
     <h1>My Calendar</h1>
     <div class="calendar-container">
       <div id="calendar"></div>

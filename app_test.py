@@ -75,24 +75,68 @@ def kanban():
     
 
 
+# return redirect(url_for('index', param1='value1', param2='value2'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form=LoginForm()
+    login_form=LoginForm()
+    project_form=ProjectForm()
     if request.method == 'POST':
-        if form.validate_on_submit():
-            email = form.email.data
-            pw = form.password.data
+        if login_form.validate_on_submit():
+            email = login_form.email.data
+            pw = login_form.password.data
             session['email'] = email
             user = UserModel.query.filter_by(email=email).first()
+            user_id = user.id
+            try:
+                projects=ProjectModel.query.filter_by(user_id=user_id).all()
+            except:
+                projects = []
             if user is not None and user.check_password(pw):
                 login_user(user)
                 # return render_template('home1.html', projects=ProjectModel.query.all())
-                return render_template('home.html')
+                # render_template('home.html', project_form=project_form, projects = projects)
+                return redirect(url_for('home', login_form=login_form, project_form=project_form, projects = projects))
+                
             else:
                 flash('Invalid email or password')
                 logout_user()
                 return redirect(url_for('login'))
-    return render_template('login.html',form=form)
+    return render_template('login.html', login_form=login_form)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    register_form=RegisterForm()
+    if request.method == 'POST':
+        if register_form.validate_on_submit():
+            email = register_form.email.data
+            pw = register_form.password.data
+            session['email'] = email
+            user = UserModel.query.filter_by(email=email).first() # "user" is now a database of dictionaries. {id = ..., email = ..., password = ...}
+            user_id = user["id"]
+            if user is None:
+                add_user(email, pw)
+                user = UserModel.query.filter_by(email=email).first()
+                login_user(user)
+                # return render_template('home1.html', projects=ProjectModel.query.all())
+                return render_template('home.html')
+            else:
+                flash('Email already exists')
+                return redirect(url_for('register'))                
+    return render_template('registration.html',form=register_form)
+
+
+
+@app.route('/home', methods=['GET'])
+def home():
+    if request.method == 'GET':
+        project_form = request.args.get('project_form')
+        login_form = request.args.get('login_form')
+        projects = request.args.get('projects')
+        project_title = project_form.projectTitle.data
+    return render_template('home.html', project_form=project_form, login_form=login_form, projects=projects)
+        # return render_template('home.html')
 
 
 
@@ -105,44 +149,24 @@ def generate_url_suffix(title):
     title = re.sub(r'[^a-z0-9-]', '', title)
     return title
 
+
 @app.route('/home', methods=['GET', 'POST'])
-@login_required
 def new_project():
-    form = ProjectForm()
+    project_form = ProjectForm()
     if request.method == 'POST':
-        if form.validate_on_submit():
-            title = form.projectTitle.data
+        if project_form.validate_on_submit():
+            title = project_form.projectTitle.data
             # Generate a unique URL for the project
             # url = generate_unique_url()
             # Create a new project in the database
-            url_suffix = generate_url_suffix(title)
-            project = ProjectModel(title=title, url=url_suffix) #, url=url)
+            # url_suffix = generate_url_suffix(title)
+            project = ProjectModel(title=title) #, url=url)
             db.session.add(project)
             db.session.commit()
             # Create an empty database of tasks for the project
             flash('Project added')
-            return redirect(url_for('home'))
-    return render_template('home.html', form=form)
+    return render_template('home.html', form=project_form)
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form=RegisterForm()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            email = form.email.data
-            pw = form.password.data
-            session['email'] = email
-            user = UserModel.query.filter_by(email=email).first()
-            if user is None:
-                add_user(email, pw)
-                user = UserModel.query.filter_by(email=email).first()
-                login_user(user)
-                # return render_template('home1.html', projects=ProjectModel.query.all())
-                return render_template('home.html')
-            else:
-                flash('Email already exists')
-                return redirect(url_for('register'))                
-    return render_template('registration.html',form=form)
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -166,11 +190,7 @@ def project():
     if request.method == 'GET':
         return render_template('project.html')
 
-@app.route('/home', methods=['GET'])
-@login_required
-def home():
-    if request.method == 'GET':
-        return render_template('home.html')
+
 
 @app.route('/new_task', methods=['POST'])
 @login_required

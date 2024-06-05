@@ -32,5 +32,6 @@ class ProjectModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
-    url_suffix = db.Column(db.String(100), nullable=False)
+    # url_suffix = db.Column(db.String(100), nullable=False)
 
+# We want to pull the projects and tasks only affiliated with the current users's id. 
