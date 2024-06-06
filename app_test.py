@@ -167,24 +167,45 @@ def register():
 
 
 
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET'])
 @login_required
 def home():
     project_form = ProjectForm()
     projects = ProjectModel.query.filter_by(user_id=current_user.id).all()
     if request.method == 'GET':
-        # login_form = request.args.get('login_form')
-        # projects = request.args.get('projects')
-        # project_title = project_form.projectTitle.data
-    # return render_template('home.html', project_form=project_form, login_form=login_form, projects=projects)
+        return render_template('home.html', project_form=project_form, projects=projects)
+    elif request.method == 'POST':
+        # Process the form data here
         return render_template('home.html', project_form=project_form, projects=projects)
   
 
+@app.route('/home', methods=['GET', 'POST'])
+def new_project():
+    project_form = ProjectForm()
+    if request.method == 'POST':
+        if project_form.validate_on_submit():
+            title = project_form.projectTitle.data
+            user_id = UserModel.query.filter_by(email=session['email']).first().id
+            # Generate a unique URL for the project
+            url = generate_url_suffix(title)
+            # Create a new project in the database
+            project = ProjectModel(project=title, user_id=user_id, url=url)
+            flash(f'Project added: {project.project}')
+            flash(f'UserID: {project.user_id}')
+            db.session.add(project)
+            db.session.commit()
+            # Create an empty database of tasks for the project
+            # flash('Project added')
+        else:
+            return "Form did not validate"
+    return redirect(url_for('home'))
 
 @app.route('/delete-project/<int:project_id>', methods=['POST'])
 def delete_project(project_id):
     project = ProjectModel.query.get(project_id)
     if project:
+        # Decrease the ID of projects with greater ID than the deleted project
+        ProjectModel.query.filter(ProjectModel.id > project_id).update({ProjectModel.id: ProjectModel.id - 1})
         db.session.delete(project)
         db.session.commit()
         flash('Project deleted')
@@ -228,26 +249,6 @@ def session_view():
     return jsonify(session)
 
 
-@app.route('/home', methods=['GET', 'POST'])
-def new_project():
-    project_form = ProjectForm()
-    if request.method == 'POST':
-        if project_form.validate_on_submit():
-            title = project_form.projectTitle.data
-            user_id = UserModel.query.filter_by(email=session['email']).first().id
-            # Generate a unique URL for the project
-            url = generate_url_suffix(title)
-            # Create a new project in the database
-            project = ProjectModel(project=title, user_id=user_id, url=url)
-            flash(f'Project added: {project.project}')
-            flash(f'UserID: {project.user_id}')
-            db.session.add(project)
-            db.session.commit()
-            # Create an empty database of tasks for the project
-            # flash('Project added')
-        else:
-            return "Form did not validate"
-    return redirect(url_for('home', project_form=project_form))
 
 @app.route('/project', methods=['POST'])
 def new_task():
