@@ -1,24 +1,25 @@
-@import url("https://fonts.googleapis.com/css2?family=Neucha&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 
 html {
 	box-sizing: border-box;
 }
 
 :root {
-	--to-do: #a2622d;
-	--doing: #1b6161;
-	--done: #248224;
-	--on-hold: #a22d22;
+	--to-do: #dda1bb;
+	--doing: #a3d7d7;
+	--done: #a9e3a9;
+	--on-hold: #ff978d;
 }
 
 body {
 	margin: 0;
-	background: url("./image.jpg");
+	/* background: url("./image.jpg"); */
+	background-color: #f8d1ec;
 	background-size: cover;
 	background-position: 50% 60%;
 	background-attachment: fixed;
 	color: white;
-	font-family: "Neucha", cursive;
+	font-family: "Poppins", sans-serif;
 	font-size: 20px;
 	overflow-y: hidden;
 }
