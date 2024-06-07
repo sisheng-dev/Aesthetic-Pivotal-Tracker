@@ -21,7 +21,8 @@
                         </div>
                         <h3 class="task-title">{{ task.task }}</h3>
                         <p class="task-description">{{ task.description }}</p>
-                        <p class="task-deadline">{{ task.deadline }}</p>
+                        <h4>Deadline:</h4>
+                        <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
 
                         <!-- Edit form (initially hidden) -->
                         <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
@@ -85,7 +86,7 @@
                         </div>
                         <h3 class="task-title">{{ task.task }}</h3>
                         <p class="task-description">{{ task.description }}</p>
-                        <p class="task-deadline">{{ task.deadline }}</p>
+                        <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
 
                         <!-- Edit form (initially hidden) -->
                         <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
@@ -147,7 +148,7 @@
                         </div>
                         <h3 class="task-title">{{ task.task }}</h3>
                         <p class="task-description">{{ task.description }}</p>
-                        <p class="task-deadline">{{ task.deadline }}</p>
+                        <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
 
                         <!-- Edit form (initially hidden) -->
                         <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
