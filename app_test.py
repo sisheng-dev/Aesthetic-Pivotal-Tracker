@@ -112,8 +112,9 @@ def kanban():
     if request.method == 'GET':
         return render_template('kanban.html')
     
-
-
+@app.route('/profile', methods=['GET'])
+def profile():
+    return render_template('profile.html')
 # return redirect(url_for('index', param1='value1', param2='value2'))
 
 @app.route('/login', methods=['GET', 'POST'])
