@@ -8,58 +8,58 @@ body {
     padding: 0;
 }
 
-.container {
+/* .container {
     display: flex;
-}
+} */
 
-.sidebar {
+/* .sidebar {
     width: 200px;
     background-color: #ffffff;
     border-right: 1px solid #e0e0e0;
     padding: 20px;
-}
+} */
 
-.sidebar h2 {
+/* .sidebar h2 {
     font-size: 1.2em;
     margin-bottom: 20px;
-}
-
+} */
+/* 
 .sidebar ul {
     list-style: none;
     padding: 0;
-}
+} */
 
-.sidebar ul li {
+/* .sidebar ul li {
     margin: 15px 0;
     font-size: 1em;
     color: #555;
-}
+} */
 
-.sidebar ul li.active {
+/* .sidebar ul li.active {
     font-weight: bold;
     color: #333;
-}
+} */
 
 .main-content {
     flex: 1;
     padding: 20px;
 }
 
-.header {
+/* .header {
     margin-bottom: 20px;
-}
+} */
 
-.header h1 {
+/* .header h1 {
     font-size: 1.5em;
     margin: 0;
-}
+} */
 
-.content {
+/* .content {
     background-color: #f8d1ec;;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .avatar-section,
 .form-section,
