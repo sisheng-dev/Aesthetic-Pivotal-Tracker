@@ -7,6 +7,7 @@ from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required, current_user 
 from models import db, login_manager, UserModel, TaskModel, ProjectModel
 import re
+import uuid
 
 # Create a new Flask application instance
 app = Flask(__name__)
@@ -78,12 +79,12 @@ def view_users():
 def view_projects():
     # Query all projects
     projects = ProjectModel.query.all()
-    if not projects:
-        return "no projects found"
-    else:
+    # if not projects:
+    #     return "no projects found"
+    # else:
     # Convert the results to a list of dictionaries so it can be converted to JSON
-        projects_list = [project.to_dict() for project in projects]
-        return jsonify({'projects': projects_list})
+    projects_list = [project.to_dict() for project in projects]
+    return jsonify({'projects': projects_list})
     
 
 @app.route('/view_tasks', methods=['GET'])
@@ -172,53 +173,82 @@ def register():
 def home():
     project_form = ProjectForm()
     projects = ProjectModel.query.filter_by(user_id=current_user.id).all()
-    if request.method == 'GET':
-        return render_template('home.html', project_form=project_form, projects=projects)
-    elif request.method == 'POST':
-        # Process the form data here
-        return render_template('home.html', project_form=project_form, projects=projects)
-  
+    return render_template('home.html', project_form=project_form, projects=projects)
 
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/new_project', methods=['POST'])
 def new_project():
     project_form = ProjectForm()
-    if request.method == 'POST':
-        if project_form.validate_on_submit():
-            title = project_form.projectTitle.data
-            user_id = UserModel.query.filter_by(email=session['email']).first().id
-            # Generate a unique URL for the project
-            url = generate_url_suffix(title)
-            # Create a new project in the database
-            project = ProjectModel(project=title, user_id=user_id, url=url)
-            flash(f'Project added: {project.project}')
-            flash(f'UserID: {project.user_id}')
-            db.session.add(project)
-            db.session.commit()
-            # Create an empty database of tasks for the project
-            # flash('Project added')
-        else:
-            return "Form did not validate"
+    if project_form.validate_on_submit():
+        title = project_form.projectTitle.data
+        user_id = UserModel.query.filter_by(email=session['email']).first().id
+        # Generate a unique URL for the project
+        url = generate_url_suffix(title)
+        # Create a new project in the database
+        project = ProjectModel(project=title, user_id=user_id, url=url)
+        db.session.add(project)
+        db.session.commit()
     return redirect(url_for('home'))
+
+@app.route('/edit-project/<int:project_id>', methods=['POST'])
+def edit_project(project_id):
+    project_form = ProjectForm()
+    project = ProjectModel.query.get(project_id)
+    if project and project_form.validate_on_submit():
+        project.project = project_form.projectTitle.data
+        db.session.commit()
+        flash('Project updated successfully')
+    else:
+        flash('Failed to update project')
+    return redirect(url_for('home'))
+
 
 @app.route('/delete-project/<int:project_id>', methods=['POST'])
 def delete_project(project_id):
     project = ProjectModel.query.get(project_id)
     if project:
-        # Decrease the ID of projects with greater ID than the deleted project
-        ProjectModel.query.filter(ProjectModel.id > project_id).update({ProjectModel.id: ProjectModel.id - 1})
         db.session.delete(project)
         db.session.commit()
         flash('Project deleted')
+    else:
+        flash('Project not found')  # It's good practice to inform the user if the project was not found
     return redirect(url_for('home'))
 
+# @app.route('/project', methods=['GET'])
+@app.route('/project/<int:project_id>', methods=['GET'])
+@login_required
+def tasks(project_id):
+    task_form = TaskForm()
+    tasks = TaskModel.query.filter_by(user_id=current_user.id, project_id=project_id).all()
+    if request.method == 'GET':
+        return render_template('project.html', task_form=task_form, tasks=tasks)
+
+# @app.route('/project', methods=['GET', 'POST'])
+@app.route('/project/<int:project_id>', methods=['GET','POST'])
+def new_task(project_id):
+    task_form = TaskForm()
+    if task_form.validate_on_submit():
+        title = task_form.taskTitle.data
+        description = task_form.taskDescription.data
+        deadline = task_form.taskDeadline.data
+        # Use the project ID from the URL instead of session['project']
+        task = TaskModel(task=title, description=description, deadline=deadline, project_id=project_id, user_id=current_user.id)
+        db.session.add(task)
+        db.session.commit()
+        flash('Task added')
+    # Redirect to the Tasks page for the specific project
+    return redirect(url_for('tasks', project_id=project_id))
+
+
+
+
 def generate_url_suffix(title):
-    # Convert title to lowercase
-    title = title.lower()
-    # Replace spaces with hyphens
-    title = title.replace(' ', '-')
-    # Remove non-alphanumeric characters (except hyphens)
-    title = re.sub(r'[^a-z0-9-]', '', title)
-    return title
+    # Replace spaces in the title with hyphens
+    title = title.replace(" ", "-")
+    # Generate a unique id
+    unique_id = uuid.uuid4()
+    # Append the unique id to the title to create the URL suffix
+    url_suffix = f"{title}-{unique_id}"
+    return url_suffix
 
 
 
@@ -239,10 +269,7 @@ def unauthorized():
     flash ('You must be logged in to view that page')
     return redirect(url_for('login'))
 
-@app.route('/project', methods=['GET'])
-def project():
-    if request.method == 'GET':
-        return render_template('project.html')
+
     
 @app.route('/session', methods=['GET'])
 def session_view():
@@ -250,83 +277,19 @@ def session_view():
 
 
 
-@app.route('/project', methods=['POST'])
-def new_task():
-    task_form = TaskForm()
-    if request.method == 'POST':
-        if task_form.validate_on_submit():
-            title = task_form.title.data
-            description = task_form.description.data
-            deadline = task_form.deadline.data
-            completion_status = False
-            project_id =  ProjectModel.query.get(session['project']).id
-            project_url = ProjectModel.query.get(session['project']).url
-            task = TaskModel(task=title, description=description, deadline=deadline, completion_status=completion_status, project_id=project_id, user_id=current_user.id)
-            # project.tasks.append(task)
-            db.session.add(task)
-            db.session.commit()
-            flash('Task added')
-    return render_template(f'{project_url}', task_form=task_form)
+@app.route('/delete-task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    task = TaskModel.query.get(task_id)
+    if task is None:
+        flash('Task not found')
+        return redirect(url_for('index'))  # Adjust as necessary
+    project_id = task.project_id
+    db.session.delete(task)
+    db.session.commit()
+    flash('Task deleted')  # Corrected message
+    return redirect(url_for('tasks', project_id=project_id))
 
 
-
-# @app.route('/project', methods=['GET'])
-# def get_task_list():
-#     tasks = ProjectModel.query.get(session['tasks'])
-    
-
-#     return render_template('project.html', project=project)
-
-# @app.route('/home', methods=['GET'])
-# def get_project_list():
-#     user_id = 
-#     user = UserModel.query.filter_by(email=email).first()
-#     if ProjectModel.user_id == current_user.id:
-#         projects = ProjectModel.query.get(session['projects'])
-#         return render_template('home1.html', projects=projects)
-
-# # @app.route('/complete_task', methods=['POST'])
-# # def complete_task():
-# #     task = TaskForm()
-# #     if request.method == 'POST':
-# #         task = TaskModel.query.get(TaskModel.id)
-# #         task.completion_status = True
-# #         db.session.commit()
-# #         flash('Task completed')
-
-
-
-
-# @app.route('/delete_task/<int:task_id>', methods=['POST'])
-# def delete_task(task_id):
-#     task = TaskModel.query.get(task_id)
-#     if task:
-#         db.session.delete(task)
-#         db.session.commit()
-#         flash('Task deleted')
-#     return redirect(url_for('home'))
-
-# @app.route('/delete-project', methods=['GET'])
-# def delete_project():
-#     project = ProjectModel.query.get(project.id)
-#     if request.method == 'GET':
-#         flash(f'{project.project}')
-
-#         # db.session.delete(project)
-#         # db.session.commit()
-#         flash('Project deleted')
-#     return redirect(url_for('home'))
-
-
-
-
-
-# When a user logs in with a valid email and password, they should be redirected to /home. If a user is not logged in, they should be redirected to /login. If a user is logged in and tries to access /login, they should be redirected to /home. If a user is not logged in and tries to access /home, they should be redirected to /login. If a user is logged in and tries to access /register, they should be redirected to /home. If a user is not logged in and tries to access /register, they should be redirected to /register. If a user is logged in and tries to access /logout, they should be redirected to /login. If a user is not logged in and tries to access /logout, they should be redirected to /login.
-
-
-# Write a method called new_project() that will add a new project to the database. This method should be accessible via the /home route. This method should only be accessible to logged in users. If a user is not logged in, they should be redirected to /login. If a user is logged in and tries to access /login, they should be redirected to /home. If a user is logged in and tries to access /register, they should be redirected to /home. If a user is not logged in and tries to access /register, they should be redirected to /register. If a user is logged in and tries to access /logout, they should be redirected to /home. If a user is not logged in and tries to access /logout, they should be redirected to /login. The method should create an empty database of tasks specific for the given project. The method should also add the project to the database. The project should have a title and a unique URL. The method should return a template called home.html with the project added to the list of projects. The project should be displayed as a link that will take the user to the project page. The project page should display all the tasks associated with the project. The project page should have a form to add a new task to the project. The task should have a title, description, and end date. The task should have a completion status that defaults to False. The task should have a button to mark the task as complete. The task should have a button to delete the task. The project page should have a button to delete the project. The project page should have a button to return to the home page. The home page should have a button to log out. The home page should have a button to add a new project. The home page should have a button to view all projects. The home page should have a button to view all tasks. The home page should have a button to view all completed tasks. The home page should have a button to view all incomplete tasks. The home page should have a button to view all tasks due today. The home page should have a button to view all tasks due this week. The home page should have a button to view all tasks due this month. The home page should have a button to view all tasks due this year. The home page should have a button to view all tasks due in the future. The home page should have a button to view all tasks due in the past. The home page should have a button to view all tasks due in the next hour. The home page should have a button to view all tasks due in the next day. The home page should have a button to view all tasks due in the next week. The home page should have a button to view all tasks due in the next month. The home page should have a button to view all tasks due in the next year. The home page should have a button to view all tasks due in the past hour. The home page should have a button to view all tasks due in the past day. The home page should have a button to view all tasks due in the past week. The home page should have a button to view all tasks due in the past month. The home page should have a button to view all tasks due in the past year.
-
-# Run the application if this script is being run directly
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug='True', port=5000)
 

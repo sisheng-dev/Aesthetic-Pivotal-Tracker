@@ -83,7 +83,7 @@ body {
 
 .input-box input {
   width: 100%;
-  height: 100%;
+  height: 30%;
   background: transparent;
   border: none;
   outline: none;
@@ -214,6 +214,9 @@ a:hover {
 }
 
 .main-skills .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 25%;
   margin: 10px;
   background: #fff;
@@ -221,6 +224,7 @@ a:hover {
   border-radius: 20px;
   padding: 10px;
   box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+  position: relative; /* Added to position form within the card */
 }
 
 .main-skills .card h3 {
@@ -239,6 +243,7 @@ a:hover {
   border-radius: 10px;
   margin-top: 15px;
   cursor: pointer;
+
 }
 
 .main-skills .card button:hover {
@@ -343,23 +348,7 @@ a:hover {
   position: flex;
 }
 
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  width: 50%; /* Full width */
-  height: 50%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
 
-.modal-content {
-  background-color: #f8d1ec;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
 
 
 /* .container {
@@ -383,14 +372,6 @@ a:hover {
   padding: 20px;
 }
 
-.card {
-  position: flex;
-  background-color: #f9f9f9;
-  margin-bottom: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
 
 .card-header {
   position: absolute;
@@ -432,19 +413,7 @@ a:hover {
 
 .show {display: block;}
 
-.form-check {
-  display: static;
-  flex-direction: column;
-  color: pink;
-}
 
-.modal-content .input-box {
-  position: relative;
-  width: 100%;
-  height: 50px;
-  margin: 30px 0;
-  border: 10pt red;
-}
 
 .card .add-project-card {
   display: flex;
@@ -462,19 +431,123 @@ a:hover {
   flex-direction: column;
   gap: 10px;
 }
-/* 
-.add-project-card .input-box {
-  background-color: transparent;
-  text-align: left;
-  border: 1px solid purple;
-  color: purple;
-  text-emphasis: bold;
+
+
+.drag-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px;
 }
-.add-project-card .input-box i {
-  color: purple;
-} */
 
+.drag-list {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
 
+.drag-column {
+  flex: 1;
+  background: #f4f4f4;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 0 10px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
 
+.header {
+  text-align: center;
+  margin-bottom: 10px;
+}
 
+.drag-item-list {
+  flex-grow: 1;
+  min-height: 200px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 5px;
+}
+
+.kanban-task {
+  background: #ddd;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: grab;
+}
+
+.add-btn-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.add-container {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+.add-container form {
+  display: flex;
+  background: white;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.add-item {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.add-btn.solid {
+  background: rgba(255, 145, 226, 0.856);
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.add-btn {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  background: rgba(255, 145, 226, 0.856);
+  color: white;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.edit-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align the form elements */
+  padding: 10px;
+  width: 100%; /* Ensure it takes the full width of the card */
+  background: #fff;
+}
+
+.edit-form-container .input-box {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Ensure the buttons take the full width of the form container */
+}
+
+.edit-form-container .submit-button,
+.edit-form-container .cancel-button {
+  margin-right: 10px;
+  position: relative;
+  align-items: center;
+}
 

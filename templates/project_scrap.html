@@ -420,3 +420,211 @@
 {% endblock %}
 
 <!-- Create three columns. Each of the first two columns should have a header with a title and a button to add a task. When the button is clicked, a modal should appear with a form to add a task. The modal should have a close button to close the modal. The modal should have a title, description, a due date, and a submit button. When the submit button is clicked, the task should be added to the column. Beneath each column's header should be a card. The card should have the title "Task" and a description "This is a task". The card should have a button to edit the task. When the button is clicked, a modal should appear with a form to edit the task. The modal should have a close button to close the modal. The modal should have a title, description, a due date, and a submit button. When the submit button is clicked, the task should be updated. The card should have a button to delete the task. When the button is clicked, the task should be deleted. The columns should be draggable so that they can be rearranged. The cards should be draggable so that they can be moved between columns. The columns and cards should be saved in the database so that they persist when the page is reloaded. The third column should have a button to add another column. When the button is clicked, a new column should be added with the same functionality as the other columns. The columns should be saved in the database so that they persist when the page is reloaded. -->
+
+Code replaced on 6/5/2024
+ {% extends 'base.html' %}
+{% block title %} Project {% endblock title%}
+
+{% block header %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>Project Title</h1>
+{% endblock header %}
+
+
+
+
+{% block content %}
+
+<div class="container">
+    <div class="column">
+        <div class="column-header">
+            <h2>Category 1</h2>
+            <button class="add-task-button">Add Task</button>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <button class="dropdown-button">&#8942;</button>
+                <div class="dropdown-content">
+                    <a class="edit-task-option">Edit Task</a>
+                    <a class="delete-task-option">Delete Task</a>
+                    <a class="mark-complete-option">Mark as Complete</a>
+                </div>
+            </div>
+            <h3>Task</h3>
+            <p>This is a task</p>
+            <p>Deadline: <span class="deadline">2022-12-31</span></p>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="column-header">
+            <h2>Category 2</h2>
+            <button class="add-task-button">Add Task</button>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <button class="dropdown-button">&#8942;</button>
+                <div class="dropdown-content">
+                    <a class="edit-task-option">Edit Task</a>
+                    <a class="delete-task-option">Delete Task</a>
+                    <a class="mark-complete-option">Mark as Complete</a>
+                </div>
+            </div>
+            <h3>Task</h3>
+            <p>This is a task</p>
+            <p>Deadline: <span class="deadline">2022-12-31</span></p>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="column-header">
+            <h2>Category 3</h2>
+            <button class="add-task-button">Add Task</button>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <button class="dropdown-button">&#8942;</button>
+                <div class="dropdown-content">
+                    <a class="edit-task-option">Edit Task</a>
+                    <a class="delete-task-option">Delete Task</a>
+                    <a class="mark-complete-option">Mark as Complete</a>
+                </div>
+            </div>
+            <h3>Task</h3>
+            <p>This is a task</p>
+            <p>Deadline: <span class="deadline">2022-12-31</span></p>
+        </div>
+    </div>
+
+
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <span id="addCloseButton" class="close">&times;</span>
+            <h2>Add Task</h2>
+            <form>
+                <label for="taskTitle">Title:</label>
+                <input type="text" id="taskTitle" name="taskTitle" required>
+                <label for="taskDescription">Description:</label>
+                <textarea id="taskDescription" name="taskDescription" required></textarea>
+                <label for="taskDeadline">Deadline:</label>
+                <input type="date" id="taskDeadline" name="taskDeadline" required>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Add to Google Calendar
+                    </label>
+                  </div>
+                  
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <span id="editCloseButton" class="close">&times;</span>
+            <h2>Edit Task</h2>
+            <form>
+                <label for="editTaskTitle">Title:</label>
+                <input type="text" id="editTaskTitle" name="editTaskTitle" required>
+                <label for="editTaskDescription">Description:</label>
+                <textarea id="editTaskDescription" name="editTaskDescription" required></textarea>
+                <label for="editTaskDeadline">Deadline:</label>
+                <input type="date" id="editTaskDeadline" name="editTaskDeadline" required>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Add to Google Calendar
+                    </label>
+                  </div>
+                <button type="submit">Submit</button>
+                
+            </form>
+        </div>
+    </div>
+    
+<script>
+    window.onload = function() {
+        var addTaskButtons = document.getElementsByClassName('add-task-button');
+        var addTaskModal = document.getElementById('addTaskModal');
+        var addCloseButton = document.getElementById('addCloseButton');
+        for (var i = 0; i < addTaskButtons.length; i++) {
+            addTaskButtons[i].addEventListener('click', function() {
+                addTaskModal.style.display = "flex";
+                addTaskModal.style.justifyContent = "center";
+                addTaskModal.style.alignItems = "center";
+            });
+        }
+        addCloseButton.addEventListener('click', function() {
+            addTaskModal.style.display = "none";
+        });
+        var editTaskButtons = document.getElementsByClassName('edit-task-button');
+        var editTaskModal = document.getElementById('editTaskModal');
+        var editCloseButton= document.getElementById('editCloseButton');
+        for (var i = 0; i < editTaskButtons.length; i++) {
+            editTaskButtons[i].addEventListener('click', function() {
+                editTaskModal.style.display = "flex";
+                editTaskModal.style.justifyContent = "center";
+                editTaskModal.style.alignItems = "center";
+            });
+        }
+        editCloseButton.addEventListener('click', function() {
+            editTaskModal.style.display = "none";
+        });
+
+        var dropdownButtons = document.getElementsByClassName('dropdown-button');
+        var dropdownContents = document.getElementsByClassName('dropdown-content');
+        var editTaskOptions = document.getElementsByClassName('edit-task-option');
+        var deleteTaskOptions = document.getElementsByClassName('delete-task-option');
+        var markCompleteOptions = document.getElementsByClassName('mark-complete-option');
+        for (var i = 0; i < dropdownButtons.length; i++) {
+            dropdownButtons[i].addEventListener('click', function() {
+                var dropdownContent = this.nextElementSibling;
+                dropdownContent.classList.toggle('show');
+            });
+        }
+        for (var i = 0; i < editTaskOptions.length; i++) {
+            editTaskOptions[i].addEventListener('click', function() {
+                editTaskModal.style.display = "flex";
+                editTaskModal.style.justifyContent = "center";
+                editTaskModal.style.alignItems = "center";
+            });
+        }
+        for (var i = 0; i < deleteTaskOptions.length; i++) {
+            deleteTaskOptions[i].addEventListener('click', function() {
+                // Delete the task from the database
+                // Remove the task card from the front end
+            });
+        }
+        for (var i = 0; i < markCompleteOptions.length; i++) {
+            markCompleteOptions[i].addEventListener('click', function() {
+                var card = this.parentNode.parentNode.parentNode;
+                card.classList.toggle('completed');
+                // Update the status of the task in the database
+            });
+        }
+    }
+</script>
+</div>
+
+
+{% endblock content %}
+
+
+<!-- 
+Tasks are held in a database in the back end. Front end will call the backend wiht a for loop, looping through every item on the list and creating a card for that item. When we create a new task, we will send a post request to the backend to add the task to the database. When we delete a task, we will send a delete request to the backend to delete the task from the database. When we edit a task, we will send a put request to the backend to update the task in the database.
+
+We send the data to the back end to populate the database. Then we call the database to get the data and return the database data to the front end again and populate the front end. We will use AJAX to send the data to the back end. We will use fetch
+
+A dicitonary is a set of key-value pairs. 
+{
+title: title of task
+description: description of task
+category: category of task
+status: status of task
+deadline: deadline of task
+}
+
+-->

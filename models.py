@@ -28,11 +28,10 @@ def load_user(user_id):
 
 class TaskModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    task = db.Column(db.Integer, db.ForeignKey('project_model.id'), nullable=False)
+    task = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(500), nullable=True)
-    project_id = db.Column(db.String(100), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project_model.id'), nullable=False)
     deadline = db.Column(db.Date, nullable=True)
-    completion_status = db.Column(db.Boolean, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
 
     def to_dict(self):
@@ -40,9 +39,8 @@ class TaskModel(db.Model):
             'id': self.id,
             'task': self.task,
             'description': self.description,
-            'deadline': self.deadline,
-            'completion_status': self.completion_status,
             'project_id': self.project_id,
+            'deadline': self.deadline,
             'user_id': self.user_id
         }
 

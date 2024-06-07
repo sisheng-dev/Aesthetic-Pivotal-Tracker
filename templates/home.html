@@ -9,46 +9,40 @@
       <i class="fas fa-user-cog"></i>
     </div>
     <div class="main-skills">
-       {% for project in projects %}
-          <div class="card">
-              <div>
-                  <h3>{{ project.project }}</h3>
-                  <a href="/project/{{ project.url }}"><button>View Project</button></a>
-              </div>
-              <div>
-                  <button class="delete-project-button" onclick="deleteProject({{ project.id }})">Delete</button>
-              </div>
-          </div>
-       {% endfor %}
-      <!-- </div>
-      <div class="card">
-        <h3>Project 01</h3>
-        <p>Project Description(?) or Deadline</p>
-        <a href="/project"><button>View Project</button></a>
-      </div> -->
-      <!-- <div class="card">
-          <h3>Project 02</h3>
-          <p>Project Description(?) or Deadline</p>
-          <a href="/project"><button>View Project</button></a>
+      {% for project in projects %}
+      <div class="card" id="project-card-{{ project.id }}">
+        <div id="project-display-{{ project.id }}">
+          <h3>{{ project.project }}</h3>
+          <a href="/project/{{ project.id }}"><button>View Project</button></a>
+          <button class="edit-project-button" onclick="showEditForm({{ project.id }})">Edit</button>
+          <button class="delete-project-button" onclick="deleteProject({{ project.id }})">Delete</button>
         </div>
-        <div class="card">
-          <h3>Project 03</h3>
-          <p>Project Description(?) or Deadline</p>
-          <a href="/project"><button>View Project</button></a>
+        <div id="editProjectFormContainer-{{ project.id }}" class="edit-form-container" style="display: none;">
+          <form id="editProjectForm-{{ project.id }}" action="/edit-project/{{ project.id }}" method="post">
+            {{ project_form.csrf_token }}
+            <div class="input-box">
+              <input type="text" name="projectTitle" id="editProjectTitle-{{ project.id }}" placeholder="Title" value="{{ project.project }}" oninput="overwritePlaceholder(this)">
+              <i class='bx bxs-user'></i>
+            </div>
+            <div class="form-buttons">
+              <button class="submit-button" type="submit">Confirm</button>
+              <button class="cancel-button" type="button" onclick="hideEditForm({{ project.id }})">Cancel</button>
+            </div>
+          </form>
         </div>
-      </div> -->
-
-
+      </div>
+      {% endfor %}
       <div id="addProjectCard" class="card">
         <div class="add-project-card">
           <button id="addProjectButton" class="add-project-button" onclick="showInput()">Add Project</button>
-          <form id="projectForm" action="" method="post" style="display: none;">
+          <form id="projectForm" action="/new_project" method="post" style="display: none;">
             {{ project_form.csrf_token }}
             <div id="project-title-input" class="input-box">
               {{ project_form.projectTitle(placeholder = "Title") }}
               <i class='bx bxs-user'></i>
             </div>
             <button id="new-project-submit-button" class="submit-button" type="submit">Submit</button>
+            <button id="new-project-cancel-button" class="cancel-button" type="button" onclick="hideInput()">Cancel</button>
           </form>
         </div>
       </div>
@@ -66,75 +60,47 @@
   </div>
 </section>
 
-
-
-
-
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 <script src="{{ url_for('static',filename='script.js') }}"></script>
 <script>
-  // window.onload = function () {
-  //   var addProjectCard = document.getElementById('addProjectCard');
-  //   var addProjectButton = document.getElementsByClassName('add-project-button');
-  //   var addProjectTitle = document.getElementById('project-title-input');
-  //   var addProjectSubmitButton = document.getElementByID('add-project-submit-button');
-
-  //   var addProjectModal = document.getElementById('addProjectModal');
-
-  //   var addCloseButton = document.getElementById('addCloseButton');
-  //   for (var i = 0; i < addProjectButtons.length; i++) {
-  //     addProjectButtons[i].onclick = function () {
-  //       addProjectModal.style.display = 'flex';
-  //       addProjectModal.style.justifyContent = 'center';
-  //       addProjectModal.style.alignItems = 'center';
-  //     }
-  //   }
-  //   for (var i = 0; i < addProjectButtons.length; i++) {
-  //     addProjectButtons[i].onclick = function () {
-  //       addProjectButton.style.display = 'none';
-  //       addProjectTitle.style.display = 'flex';
-  //       addProjectSubmitButton.style.display = 'flex';
-
-  //   }
-  //   addCloseButton.onclick = function () {
-  //     addProjectModal.style.display = 'none';
-  //   }
-  // }
   function showInput() {
     document.getElementById('addProjectButton').style.display = 'none';
     document.getElementById('projectForm').style.display = 'flex';
   }
+
+  function hideInput() {
+    document.getElementById('addProjectButton').style.display = 'flex';
+    document.getElementById('projectForm').style.display = 'none';
+  }
+
+  function showEditForm(projectId) {
+    document.getElementById('project-display-' + projectId).style.display = 'none';
+    document.getElementById('editProjectFormContainer-' + projectId).style.display = 'flex';
+  }
+
+  function hideEditForm(projectId) {
+    document.getElementById('project-display-' + projectId).style.display = 'block';
+    document.getElementById('editProjectFormContainer-' + projectId).style.display = 'none';
+  }
+
+  function overwritePlaceholder(input) {
+    if (input.value !== '') {
+      input.placeholder = input.value;
+    }
+  }
+
   function deleteProject(projectId) {
     fetch('/delete-project/' + projectId, {
-        method: 'POST',
+      method: 'POST',
     })
     .then(response => {
-        if (response.redirected) {
-            window.location.href = response.url;
-        }
+      if (response.redirected) {
+        window.location.href = response.url;
+      }
     });
-}
+  }
 </script>
 
 {% endblock %}
-
-
-<!-- <div id="addProjectModal" class="modal">
-        <div class="modal-content">
-          <span id="addCloseButton" class="close">&times;</span>
-          <form action="" method="post">
-            {{ form.csrf_token }}
-            <h2>Add Project</h2>
-            <p>Project Description(?) or Deadline</p>
-            <div class="input-box">
-              {{ form.projectTitle(placeholder = "Title") }}
-              <i class='bx bxs-user'></i>
-            </div>
-          </form>
-          <button type="submit">Submit</button>
-        </div>
-      </div> -->

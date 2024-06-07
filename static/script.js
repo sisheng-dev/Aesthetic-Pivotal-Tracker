@@ -77,27 +77,22 @@ function drop(event) {
     event.target.appendChild(task);
 }
 
+// Toggle dropdown content
+function toggleDropdown(event) {
+    const dropdownContent = event.target.nextElementSibling;
+    dropdownContent.classList.toggle("show");
+}
+
 // Show input box to add a new task
 function showInputBox(columnId) {
     const inputBox = document.querySelector(`#new-task-${columnId}`).parentElement;
     inputBox.style.display = 'flex';
+
 }
 
-// Add a new task
-function addTask(columnId) {
-    const input = document.getElementById(`new-task-${columnId}`);
-    const taskText = input.value;
-    if (taskText.trim() !== "") {
-        const newTask = document.createElement('div');
-        newTask.className = 'kanban-task';
-        newTask.id = `${columnId}-${new Date().getTime()}`;
-        newTask.draggable = true;
-        newTask.ondragstart = drag;
-        newTask.innerText = taskText;
-        document.getElementById(columnId).appendChild(newTask);
-        input.value = "";
-        input.parentElement.style.display = 'none';
-    }
+function hideInputBox(columnId) {
+    const inputBox = document.querySelector(`#new-task-${columnId}`).parentElement;
+    inputBox.style.display = 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -124,3 +119,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+function deleteTask(taskId) {
+    fetch('/delete-task/' + taskId, {
+      method: 'POST',
+    })
+      .then(response => {
+        if (response.redirected) {
+          window.location.href = response.url;
+        }
+      });
+  }

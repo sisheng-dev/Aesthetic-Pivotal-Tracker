@@ -1,205 +1,150 @@
-{% extends 'base.html' %}
-{% block title %} Project {% endblock title%}
-
-{% block header %}
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<h1>Project Title</h1>
-{% endblock header %}
-
-
-
+{% extends "base.html" %}
 
 {% block content %}
+<div class="drag-container">
+    <ul class="drag-list">
+        <!-- To Do Column -->
+        <li class="drag-column">
+            <span class="header">
+                <h2>To Do</h2>
+            </span>
+            <div id="to-do-content" class="drag-item-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                {% for task in tasks %}
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                    <div class="card">
+                        <div class="card-header">
+                            <button class="dropdown-button" onclick="toggleDropdown(event)">&#8942;</button>
+                            <div class="dropdown-content">
+                                <a class="edit-task-option">Edit task</a>
+                                <a class="delete-task-option" onclick="deleteTask({{ task.id }})">Delete task</a>
+                            </div>
+                        </div>
+                        <h3>{{ task.title }}</h3>
+                        <p>{{ task.description }}</p>
+                        <p>{{ task.deadline }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="add-btn-group">
+                <div class="add-btn" onclick="showInputBox('to-do-content')">
+                    <span class="plus-sign">+</span>
+                    <span>Add Item</span>
+                </div>
+                <div class="add-container">
+                    <form id="new-task-to-do-content" action="" method="post">
+                        {{ task_form.csrf_token }}
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskTitle(placeholder = "Title") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskDescription(placeholder = "Description") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskDeadline(placeholder = "Deadline") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
 
-<div class="container">
-    <div class="column">
-        <div class="column-header">
-            <h2>Category 1</h2>
-            <button class="add-task-button">Add Task</button>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <button class="dropdown-button">&#8942;</button>
-                <div class="dropdown-content">
-                    <a class="edit-task-option">Edit Task</a>
-                    <a class="delete-task-option">Delete Task</a>
-                    <a class="mark-complete-option">Mark as Complete</a>
+                        <!-- <input type="text" id="new-task-to-do-content" class="add-item" placeholder="Add a task"> -->
+                        <button class="add-btn solid" onclick="addTask('to-do-content')">Save Item</button>
+                        <button class="add-btn solid" onclick="hideInputBox('to-do-content')">Cancel</button>
+                    </form>
                 </div>
             </div>
-            <h3>Task</h3>
-            <p>This is a task</p>
-            <p>Deadline: <span class="deadline">2022-12-31</span></p>
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="column-header">
-            <h2>Category 2</h2>
-            <button class="add-task-button">Add Task</button>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <button class="dropdown-button">&#8942;</button>
-                <div class="dropdown-content">
-                    <a class="edit-task-option">Edit Task</a>
-                    <a class="delete-task-option">Delete Task</a>
-                    <a class="mark-complete-option">Mark as Complete</a>
+        </li>
+        <!-- In Progress Column -->
+        <li class="drag-column">
+            <span class="header">
+                <h2>In Progress</h2>
+            </span>
+            <div id="in-progress-content" class="drag-item-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+            </div>
+            <!-- <div class="add-btn-group">
+                <div class="add-btn" onclick="showInputBox('in-progress-content')">
+                    <span class="plus-sign">+</span>
+                    <span>Add Item</span>
+                </div>
+                <div class="add-container">
+                    <input type="text" id="new-task-in-progress-content" class="add-item" placeholder="Add a task">
+                    <button class="add-btn solid" onclick="addTask('in-progress-content')">Save Item</button>
+                </div>
+            </div> -->
+            <div class="add-btn-group">
+                <div class="add-btn" onclick="showInputBox('in-progress-content')">
+                    <span class="plus-sign">+</span>
+                    <span>Add Item</span>
+                </div>
+                <div class="add-container">
+                    <form id="new-task-in-progress-content" action="" method="post">
+                        {{ task_form.csrf_token }}
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskTitle(placeholder = "Title") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskDescription(placeholder = "Description") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskDeadline(placeholder = "Deadline") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <!-- <input type="text" id="new-task-to-do-content" class="add-item" placeholder="Add a task"> -->
+                        <button class="add-btn solid" onclick="addTask('in-progress-content')">Save Item</button>
+                        <button class="add-btn solid" onclick="hideInputBox('in-progress-content')">Cancel</button>
+                    </form>
                 </div>
             </div>
-            <h3>Task</h3>
-            <p>This is a task</p>
-            <p>Deadline: <span class="deadline">2022-12-31</span></p>
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="column-header">
-            <h2>Category 3</h2>
-            <button class="add-task-button">Add Task</button>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <button class="dropdown-button">&#8942;</button>
-                <div class="dropdown-content">
-                    <a class="edit-task-option">Edit Task</a>
-                    <a class="delete-task-option">Delete Task</a>
-                    <a class="mark-complete-option">Mark as Complete</a>
+        </li>
+        <!-- Done Column -->
+        <li class="drag-column">
+            <span class="header">
+                <h2>Done</h2>
+            </span>
+            <div id="done-content" class="drag-item-list" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <!-- <div class="add-btn-group">
+                <div class="add-btn" onclick="showInputBox('done-content')">
+                    <span class="plus-sign">+</span>
+                    <span>Add Item</span>
+                </div>
+                <div class="add-container">
+                    <input type="text" id="new-task-done-content" class="add-item" placeholder="Add a task">
+                    <button class="add-btn solid" onclick="addTask('done-content')">Save Item</button>
+                </div>
+            </div> -->
+            <div class="add-btn-group">
+                <div class="add-btn" onclick="showInputBox('done-content')">
+                    <span class="plus-sign">+</span>
+                    <span>Add Item</span>
+                </div>
+                <div class="add-container">
+                    <form id="new-task-done-content" action="" method="post">
+                        {{ task_form.csrf_token }}
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskTitle(placeholder = "Title") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskDescription(placeholder = "Description") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <div id="project-title-input" class="input-box">
+                            {{ task_form.taskDeadline(placeholder = "Deadline") }}
+                            <i class='bx bxs-user'></i>
+                        </div>
+                        <!-- <input type="text" id="new-task-to-do-content" class="add-item" placeholder="Add a task"> -->
+                        <button class="add-btn solid" onclick="addTask('done-content')">Save Item</button>
+                        <button class="add-btn solid" onclick="hideInputBox('done-content')">Cancel</button>
+                    </form>
                 </div>
             </div>
-            <h3>Task</h3>
-            <p>This is a task</p>
-            <p>Deadline: <span class="deadline">2022-12-31</span></p>
-        </div>
-    </div>
-
-
-    <div id="addTaskModal" class="modal">
-        <div class="modal-content">
-            <span id="addCloseButton" class="close">&times;</span>
-            <h2>Add Task</h2>
-            <form>
-                <label for="taskTitle">Title:</label>
-                <input type="text" id="taskTitle" name="taskTitle" required>
-                <label for="taskDescription">Description:</label>
-                <textarea id="taskDescription" name="taskDescription" required></textarea>
-                <label for="taskDeadline">Deadline:</label>
-                <input type="date" id="taskDeadline" name="taskDeadline" required>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Add to Google Calendar
-                    </label>
-                  </div>
-                  
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="editTaskModal" class="modal">
-        <div class="modal-content">
-            <span id="editCloseButton" class="close">&times;</span>
-            <h2>Edit Task</h2>
-            <form>
-                <label for="editTaskTitle">Title:</label>
-                <input type="text" id="editTaskTitle" name="editTaskTitle" required>
-                <label for="editTaskDescription">Description:</label>
-                <textarea id="editTaskDescription" name="editTaskDescription" required></textarea>
-                <label for="editTaskDeadline">Deadline:</label>
-                <input type="date" id="editTaskDeadline" name="editTaskDeadline" required>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Add to Google Calendar
-                    </label>
-                  </div>
-                <button type="submit">Submit</button>
-                
-            </form>
-        </div>
-    </div>
-    
-<script>
-    window.onload = function() {
-        var addTaskButtons = document.getElementsByClassName('add-task-button');
-        var addTaskModal = document.getElementById('addTaskModal');
-        var addCloseButton = document.getElementById('addCloseButton');
-        for (var i = 0; i < addTaskButtons.length; i++) {
-            addTaskButtons[i].addEventListener('click', function() {
-                addTaskModal.style.display = "flex";
-                addTaskModal.style.justifyContent = "center";
-                addTaskModal.style.alignItems = "center";
-            });
-        }
-        addCloseButton.addEventListener('click', function() {
-            addTaskModal.style.display = "none";
-        });
-        var editTaskButtons = document.getElementsByClassName('edit-task-button');
-        var editTaskModal = document.getElementById('editTaskModal');
-        var editCloseButton= document.getElementById('editCloseButton');
-        for (var i = 0; i < editTaskButtons.length; i++) {
-            editTaskButtons[i].addEventListener('click', function() {
-                editTaskModal.style.display = "flex";
-                editTaskModal.style.justifyContent = "center";
-                editTaskModal.style.alignItems = "center";
-            });
-        }
-        editCloseButton.addEventListener('click', function() {
-            editTaskModal.style.display = "none";
-        });
-
-        var dropdownButtons = document.getElementsByClassName('dropdown-button');
-        var dropdownContents = document.getElementsByClassName('dropdown-content');
-        var editTaskOptions = document.getElementsByClassName('edit-task-option');
-        var deleteTaskOptions = document.getElementsByClassName('delete-task-option');
-        var markCompleteOptions = document.getElementsByClassName('mark-complete-option');
-        for (var i = 0; i < dropdownButtons.length; i++) {
-            dropdownButtons[i].addEventListener('click', function() {
-                var dropdownContent = this.nextElementSibling;
-                dropdownContent.classList.toggle('show');
-            });
-        }
-        for (var i = 0; i < editTaskOptions.length; i++) {
-            editTaskOptions[i].addEventListener('click', function() {
-                editTaskModal.style.display = "flex";
-                editTaskModal.style.justifyContent = "center";
-                editTaskModal.style.alignItems = "center";
-            });
-        }
-        for (var i = 0; i < deleteTaskOptions.length; i++) {
-            deleteTaskOptions[i].addEventListener('click', function() {
-                // Delete the task from the database
-                // Remove the task card from the front end
-            });
-        }
-        for (var i = 0; i < markCompleteOptions.length; i++) {
-            markCompleteOptions[i].addEventListener('click', function() {
-                var card = this.parentNode.parentNode.parentNode;
-                card.classList.toggle('completed');
-                // Update the status of the task in the database
-            });
-        }
-    }
-</script>
+        </li>
+    </ul>
 </div>
+<script src=" {{ url_for('static', filename='script.js')}}"></script>
+
 
 
 {% endblock content %}
-
-
-<!-- 
-Tasks are held in a database in the back end. Front end will call the backend wiht a for loop, looping through every item on the list and creating a card for that item. When we create a new task, we will send a post request to the backend to add the task to the database. When we delete a task, we will send a delete request to the backend to delete the task from the database. When we edit a task, we will send a put request to the backend to update the task in the database.
-
-We send the data to the back end to populate the database. Then we call the database to get the data and return the database data to the front end again and populate the front end. We will use AJAX to send the data to the back end. We will use fetch
-
-A dicitonary is a set of key-value pairs. 
-{
-title: title of task
-description: description of task
-category: category of task
-status: status of task
-deadline: deadline of task
-} -->
-
