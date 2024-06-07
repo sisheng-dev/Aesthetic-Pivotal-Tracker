@@ -33,6 +33,7 @@ class TaskModel(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project_model.id'), nullable=False)
     deadline = db.Column(db.Date, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
+    status = db.Column(db.Integer, nullable=False, default=0)
 
     def to_dict(self):
         return {
@@ -41,7 +42,8 @@ class TaskModel(db.Model):
             'description': self.description,
             'project_id': self.project_id,
             'deadline': self.deadline,
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            'status': self.status
         }
 
 class ProjectModel(db.Model):
@@ -57,6 +59,3 @@ class ProjectModel(db.Model):
             'user_id': self.user_id,
             'url': self.url
         }
-    # url_suffix = db.Column(db.String(100), nullable=False)
-
-# We want to pull the projects and tasks only affiliated with the current users's id. 

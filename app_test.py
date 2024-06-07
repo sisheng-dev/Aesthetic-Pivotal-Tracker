@@ -3,7 +3,6 @@
 import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
 from forms import LoginForm, RegisterForm, ProjectForm, TaskForm
-from yelp import find_coffee
 from flask_login import login_user, logout_user, login_required, current_user 
 from models import db, login_manager, UserModel, TaskModel, ProjectModel
 import re
@@ -65,7 +64,7 @@ def reset_db():
     add_user('dwools@uw.edu', 'password')
     return "Database reset"        
 
-@app.route('/view_users', methods=['GET'])
+@app.route('/view-users', methods=['GET'])
 def view_users():
     # Query all users
     users = UserModel.query.all()
@@ -75,7 +74,7 @@ def view_users():
 
     return jsonify({'users': users_list})
 
-@app.route('/view_projects', methods=['GET'])
+@app.route('/view-projects', methods=['GET'])
 def view_projects():
     # Query all projects
     projects = ProjectModel.query.all()
@@ -87,7 +86,7 @@ def view_projects():
     return jsonify({'projects': projects_list})
     
 
-@app.route('/view_tasks', methods=['GET'])
+@app.route('/view-tasks', methods=['GET'])
 def view_tasks():
     # Query all tasks
     tasks = TaskModel.query.all()
@@ -218,9 +217,11 @@ def delete_project(project_id):
 @login_required
 def tasks(project_id):
     task_form = TaskForm()
-    tasks = TaskModel.query.filter_by(user_id=current_user.id, project_id=project_id).all()
+    to_do_tasks = TaskModel.query.filter_by(user_id=current_user.id, project_id=project_id, status=0).all()
+    in_progress_tasks = TaskModel.query.filter_by(user_id=current_user.id, project_id=project_id, status=1).all()
+    done_tasks = TaskModel.query.filter_by(user_id=current_user.id, project_id=project_id, status=2).all()
     if request.method == 'GET':
-        return render_template('project.html', task_form=task_form, tasks=tasks)
+        return render_template('project.html', task_form=task_form, tasks=tasks, to_do_tasks=to_do_tasks, in_progress_tasks=in_progress_tasks, done_tasks=done_tasks)
 
 # @app.route('/project', methods=['GET', 'POST'])
 @app.route('/project/<int:project_id>', methods=['GET','POST'])
@@ -234,11 +235,50 @@ def new_task(project_id):
         task = TaskModel(task=title, description=description, deadline=deadline, project_id=project_id, user_id=current_user.id)
         db.session.add(task)
         db.session.commit()
-        flash('Task added')
+        # flash('Task added')
     # Redirect to the Tasks page for the specific project
     return redirect(url_for('tasks', project_id=project_id))
 
+@app.route('/edit-task/<int:task_id>', methods=['POST'])
+def edit_task(task_id):
+    task_form = TaskForm()
+    task = TaskModel.query.get(task_id)
+    if task and task_form.validate_on_submit():
+        task.task = task_form.taskTitle.data
+        task.description = task_form.taskDescription.data
+        task.deadline = task_form.taskDeadline.data
+        db.session.commit()
+        flash('Task updated successfully')
+    else:
+        flash('Failed to update task')
+    return redirect(url_for('tasks', project_id=task.project_id))
 
+
+@app.route('/update-task-status/<int:task_id>', methods=['POST'])
+def update_task_status(task_id):
+    task = TaskModel.query.get(task_id)
+    if task is None:
+        return jsonify({'error': 'Task not found'}), 404
+
+    data = request.get_json()
+    if 'status' in data:
+        task.status = data['status']
+        db.session.commit()
+        return jsonify({'success': 'Task status updated successfully'}), 200
+    else:
+        return jsonify({'error': 'Invalid data'}), 400
+
+@app.route('/delete-task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    task = TaskModel.query.get(task_id)
+    if task is None:
+        flash('Task not found')
+        return redirect(url_for('index'))  # Adjust as necessary
+    project_id = task.project_id
+    db.session.delete(task)
+    db.session.commit()
+    flash('Task deleted')  # Corrected message
+    return redirect(url_for('tasks', project_id=project_id))
 
 
 def generate_url_suffix(title):
@@ -277,17 +317,7 @@ def session_view():
 
 
 
-@app.route('/delete-task/<int:task_id>', methods=['POST'])
-def delete_task(task_id):
-    task = TaskModel.query.get(task_id)
-    if task is None:
-        flash('Task not found')
-        return redirect(url_for('index'))  # Adjust as necessary
-    project_id = task.project_id
-    db.session.delete(task)
-    db.session.commit()
-    flash('Task deleted')  # Corrected message
-    return redirect(url_for('tasks', project_id=project_id))
+
 
 
 if __name__ == '__main__':

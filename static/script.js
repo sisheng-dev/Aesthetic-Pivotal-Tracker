@@ -69,12 +69,45 @@ function drag(event) {
     event.dataTransfer.setData("text", event.target.id);
 }
 
-// Drop the item
+// Drop the item and update status
 function drop(event) {
     event.preventDefault();
     const data = event.dataTransfer.getData("text");
     const task = document.getElementById(data);
-    event.target.appendChild(task);
+    const targetColumn = event.target.closest('.drag-item-list');
+    
+    if (targetColumn && task) {
+        targetColumn.appendChild(task);
+
+        let newStatus;
+        if (targetColumn.id === 'to-do-content') {
+            newStatus = 0;
+        } else if (targetColumn.id === 'in-progress-content') {
+            newStatus = 1;
+        } else if (targetColumn.id === 'done-content') {
+            newStatus = 2;
+        }
+
+        fetch(`/update-task-status/${task.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Task status updated successfully.');
+            } else {
+                console.log('Failed to update task status.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        
+    }
 }
 
 // Toggle dropdown content
@@ -131,3 +164,63 @@ function deleteTask(taskId) {
         }
       });
   }
+
+// Show the edit form
+function showEditForm(taskId) {
+    const card = document.getElementById(taskId);
+    const title = card.querySelector('.task-title');
+    const description = card.querySelector('.task-description');
+    const deadline = card.querySelector('.task-deadline');
+    const form = card.querySelector('.edit-task-form');
+
+    title.style.display = 'none';
+    description.style.display = 'none';
+    deadline.style.display = 'none';
+    form.style.display = 'block';
+}
+
+// Hide the edit form and show original task details
+function hideEditForm(taskId) {
+    const card = document.getElementById(taskId);
+    const title = card.querySelector('.task-title');
+    const description = card.querySelector('.task-description');
+    const deadline = card.querySelector('.task-deadline');
+    const form = card.querySelector('.edit-task-form');
+
+    title.style.display = 'block';
+    description.style.display = 'block';
+    deadline.style.display = 'block';
+    form.style.display = 'none';
+}
+
+// Add event listeners for confirm and cancel buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const editForms = document.querySelectorAll('.edit-task-form');
+    editForms.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const taskId = form.parentElement.id;
+            const formData = new FormData(form);
+
+            fetch(`/edit-task/${taskId}`, {
+                method: 'POST',
+                body: formData,
+            }).then(response => {
+                if (response.ok) {
+                    response.json().then(data => {
+                        const card = document.getElementById(taskId);
+                        card.querySelector('.task-title').innerText = data.taskTitle;
+                        card.querySelector('.task-description').innerText = data.taskDescription;
+                        card.querySelector('.task-deadline').innerText = data.taskDeadline;
+                        hideEditForm(taskId);
+                    });
+                }
+            });
+        });
+    });
+});
+
+function getCSRFToken() {
+    return document.querySelector('input[name="csrf_token"]').value;
+}
+

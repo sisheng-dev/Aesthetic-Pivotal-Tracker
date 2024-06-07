@@ -9,19 +9,32 @@
                 <h2>To Do</h2>
             </span>
             <div id="to-do-content" class="drag-item-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-                {% for task in tasks %}
+                {% for task in to_do_tasks %}
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
                     <div class="card">
                         <div class="card-header">
                             <button class="dropdown-button" onclick="toggleDropdown(event)">&#8942;</button>
                             <div class="dropdown-content">
-                                <a class="edit-task-option">Edit task</a>
+                                <a class="edit-task-option" onclick="showEditForm({{ task.id }})">Edit task</a>
                                 <a class="delete-task-option" onclick="deleteTask({{ task.id }})">Delete task</a>
                             </div>
                         </div>
-                        <h3>{{ task.title }}</h3>
-                        <p>{{ task.description }}</p>
-                        <p>{{ task.deadline }}</p>
+                        <h3 class="task-title">{{ task.task }}</h3>
+                        <p class="task-description">{{ task.description }}</p>
+                        <p class="task-deadline">{{ task.deadline }}</p>
+
+                        <!-- Edit form (initially hidden) -->
+                        <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
+                            method="post" action="{{ url_for('edit_task', task_id=task.id) }}">
+                            {{ task_form.csrf_token }}
+                            <input type="text" name="taskTitle" placeholder="{{ task.task }}" value="{{ task.task }}">
+                            <input type="text" name="taskDescription" placeholder="{{ task.description }}"
+                                value="{{ task.description }}">
+                            <input type="date" name="taskDeadline" placeholder="{{ task.deadline }}"
+                                value="{{ task.deadline }}">
+                            <button type="submit">Confirm</button>
+                            <button type="button" onclick="hideEditForm({{ task.id }})">Cancel</button>
+                        </form>
                     </div>
                 </div>
                 {% endfor %}
@@ -60,17 +73,36 @@
                 <h2>In Progress</h2>
             </span>
             <div id="in-progress-content" class="drag-item-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                {% for task in in_progress_tasks %}
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                    <div class="card">
+                        <div class="card-header">
+                            <button class="dropdown-button" onclick="toggleDropdown(event)">&#8942;</button>
+                            <div class="dropdown-content">
+                                <a class="edit-task-option" onclick="showEditForm({{ task.id }})">Edit task</a>
+                                <a class="delete-task-option" onclick="deleteTask({{ task.id }})">Delete task</a>
+                            </div>
+                        </div>
+                        <h3 class="task-title">{{ task.task }}</h3>
+                        <p class="task-description">{{ task.description }}</p>
+                        <p class="task-deadline">{{ task.deadline }}</p>
+
+                        <!-- Edit form (initially hidden) -->
+                        <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
+                            method="post" action="{{ url_for('edit_task', task_id=task.id) }}">
+                            {{ task_form.csrf_token }}
+                            <input type="text" name="taskTitle" placeholder="{{ task.task }}" value="{{ task.task }}">
+                            <input type="text" name="taskDescription" placeholder="{{ task.description }}"
+                                value="{{ task.description }}">
+                            <input type="date" name="taskDeadline" placeholder="{{ task.deadline }}"
+                                value="{{ task.deadline }}">
+                            <button type="submit">Confirm</button>
+                            <button type="button" onclick="hideEditForm({{ task.id }})">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            <!-- <div class="add-btn-group">
-                <div class="add-btn" onclick="showInputBox('in-progress-content')">
-                    <span class="plus-sign">+</span>
-                    <span>Add Item</span>
-                </div>
-                <div class="add-container">
-                    <input type="text" id="new-task-in-progress-content" class="add-item" placeholder="Add a task">
-                    <button class="add-btn solid" onclick="addTask('in-progress-content')">Save Item</button>
-                </div>
-            </div> -->
             <div class="add-btn-group">
                 <div class="add-btn" onclick="showInputBox('in-progress-content')">
                     <span class="plus-sign">+</span>
@@ -91,7 +123,6 @@
                             {{ task_form.taskDeadline(placeholder = "Deadline") }}
                             <i class='bx bxs-user'></i>
                         </div>
-                        <!-- <input type="text" id="new-task-to-do-content" class="add-item" placeholder="Add a task"> -->
                         <button class="add-btn solid" onclick="addTask('in-progress-content')">Save Item</button>
                         <button class="add-btn solid" onclick="hideInputBox('in-progress-content')">Cancel</button>
                     </form>
@@ -103,17 +134,38 @@
             <span class="header">
                 <h2>Done</h2>
             </span>
-            <div id="done-content" class="drag-item-list" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            <!-- <div class="add-btn-group">
-                <div class="add-btn" onclick="showInputBox('done-content')">
-                    <span class="plus-sign">+</span>
-                    <span>Add Item</span>
+            <div id="done-content" class="drag-item-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                {% for task in done_tasks %}
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="{{ task.id }}">
+                    <div class="card">
+                        <div class="card-header">
+                            <button class="dropdown-button" onclick="toggleDropdown(event)">&#8942;</button>
+                            <div class="dropdown-content">
+                                <a class="edit-task-option" onclick="showEditForm({{ task.id }})">Edit task</a>
+                                <a class="delete-task-option" onclick="deleteTask({{ task.id }})">Delete task</a>
+                            </div>
+                        </div>
+                        <h3 class="task-title">{{ task.task }}</h3>
+                        <p class="task-description">{{ task.description }}</p>
+                        <p class="task-deadline">{{ task.deadline }}</p>
+
+                        <!-- Edit form (initially hidden) -->
+                        <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
+                            method="post" action="{{ url_for('edit_task', task_id=task.id) }}">
+                            {{ task_form.csrf_token }}
+                            <input type="text" name="taskTitle" placeholder="{{ task.task }}" value="{{ task.task }}">
+                            <input type="text" name="taskDescription" placeholder="{{ task.description }}"
+                                value="{{ task.description }}">
+                            <input type="date" name="taskDeadline" placeholder="{{ task.deadline }}"
+                                value="{{ task.deadline }}">
+                            <button type="submit">Confirm</button>
+                            <button type="button" onclick="hideEditForm({{ task.id }})">Cancel</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="add-container">
-                    <input type="text" id="new-task-done-content" class="add-item" placeholder="Add a task">
-                    <button class="add-btn solid" onclick="addTask('done-content')">Save Item</button>
-                </div>
-            </div> -->
+                {% endfor %}
+            </div>
+                
             <div class="add-btn-group">
                 <div class="add-btn" onclick="showInputBox('done-content')">
                     <span class="plus-sign">+</span>
@@ -134,7 +186,6 @@
                             {{ task_form.taskDeadline(placeholder = "Deadline") }}
                             <i class='bx bxs-user'></i>
                         </div>
-                        <!-- <input type="text" id="new-task-to-do-content" class="add-item" placeholder="Add a task"> -->
                         <button class="add-btn solid" onclick="addTask('done-content')">Save Item</button>
                         <button class="add-btn solid" onclick="hideInputBox('done-content')">Cancel</button>
                     </form>
@@ -144,7 +195,5 @@
     </ul>
 </div>
 <script src=" {{ url_for('static', filename='script.js')}}"></script>
-
-
 
 {% endblock content %}
