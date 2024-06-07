@@ -212,7 +212,7 @@ def delete_project(project_id):
         flash('Project not found')  # It's good practice to inform the user if the project was not found
     return redirect(url_for('home'))
 
-# @app.route('/project', methods=['GET'])
+
 @app.route('/project/<int:project_id>', methods=['GET'])
 @login_required
 def tasks(project_id):
@@ -223,7 +223,7 @@ def tasks(project_id):
     if request.method == 'GET':
         return render_template('project.html', task_form=task_form, tasks=tasks, to_do_tasks=to_do_tasks, in_progress_tasks=in_progress_tasks, done_tasks=done_tasks)
 
-# @app.route('/project', methods=['GET', 'POST'])
+
 @app.route('/project/<int:project_id>', methods=['GET','POST'])
 def new_task(project_id):
     task_form = TaskForm()
