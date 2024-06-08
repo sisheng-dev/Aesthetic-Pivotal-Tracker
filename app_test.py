@@ -156,42 +156,44 @@ def login():
             pw = login_form.password.data
             session['email'] = email
             user = UserModel.query.filter_by(email=email).first()
-            user_id = user.id
-            projects=ProjectModel.query.filter_by(user_id=user_id).all()
             if user is not None and user.check_password(pw):
                 login_user(user)
-                # return render_template('home1.html', projects=ProjectModel.query.all())
-                # render_template('home.html', project_form=project_form, projects = projects)
-                return redirect(url_for('home', login_form=login_form, project_form=project_form, projects = projects))
-                
+                projects = ProjectModel.query.filter_by(user_id=user.id).all()
+                return redirect(url_for('home', login_form=login_form, project_form=project_form, projects=projects))
             else:
-                flash('Invalid email or password')
+                # flash('Invalid email or password')
                 logout_user()
                 return redirect(url_for('login'))
+        else:
+            # flash('Invalid email or password')
+            return redirect(url_for('login'))
     return render_template('login.html', login_form=login_form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    register_form=RegisterForm()
+    register_form = RegisterForm()
     if request.method == 'POST':
         if register_form.validate_on_submit():
             email = register_form.email.data
             pw = register_form.password.data
-            session['email'] = email
-            user = UserModel.query.filter_by(email=email).first() # "user" is now a database of dictionaries. {id = ..., email = ..., password = ...}
-            user_id = user["id"]
+            confirm_pw = register_form.confirm_password.data
+
+            if pw != confirm_pw:
+                flash('Passwords must match.')
+                return redirect(url_for('register'))
+
+            user = UserModel.query.filter_by(email=email).first()
             if user is None:
                 add_user(email, pw)
                 user = UserModel.query.filter_by(email=email).first()
                 login_user(user)
-                # return render_template('home1.html', projects=ProjectModel.query.all())
-                return render_template('home.html')
+                return redirect(url_for('home'))
             else:
                 flash('Email already exists')
-                return redirect(url_for('register'))                
-    return render_template('registration.html',register_form=register_form)
-
+                return redirect(url_for('register'))
+    elif request.method == 'GET':
+        return render_template('registration.html', register_form=register_form)
 
 
 @app.route('/home', methods=['GET'])
@@ -226,6 +228,8 @@ def edit_project(project_id):
     else:
         flash('Failed to update project')
     return redirect(url_for('home'))
+
+
 
 
 @app.route('/delete-project/<int:project_id>', methods=['POST'])
