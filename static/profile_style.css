@@ -2,68 +2,21 @@
 
 body {
     font-family: "Poppins", 'sans-serif';
-    background-color: #f7f7f7;
+    background-color: #f7d1e8; /* Set background color to pink */
     color: #333;
     margin: 0;
     padding: 0;
 }
-
-/* .container {
-    display: flex;
-} */
-
-/* .sidebar {
-    width: 200px;
-    background-color: #ffffff;
-    border-right: 1px solid #e0e0e0;
-    padding: 20px;
-} */
-
-/* .sidebar h2 {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-} */
-/* 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-} */
-
-/* .sidebar ul li {
-    margin: 15px 0;
-    font-size: 1em;
-    color: #555;
-} */
-
-/* .sidebar ul li.active {
-    font-weight: bold;
-    color: #333;
-} */
 
 .main-content {
     flex: 1;
     padding: 20px;
 }
 
-/* .header {
-    margin-bottom: 20px;
-} */
-
-/* .header h1 {
-    font-size: 1.5em;
-    margin: 0;
-} */
-
-/* .content {
-    background-color: #f8d1ec;;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-} */
-
 .avatar-section,
 .form-section,
-.integrations-section {
+.integrations-section,
+.delete-profile-section {
     margin-bottom: 20px;
 }
 
@@ -73,20 +26,6 @@ body {
     border-radius: 50%;
     display: block;
     margin-bottom: 10px;
-}
-
-.btn-change {
-    display: inline-block;
-    background-color: #ff69b4;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-change:hover {
-    background-color: #ff1493;
 }
 
 .form-section label {
@@ -102,6 +41,7 @@ body {
     border: 1px solid #e0e0e0;
     border-radius: 4px;
     font-size: 1em;
+    color: #333;
 }
 
 .form-section .info {
@@ -118,9 +58,39 @@ body {
     text-decoration: underline;
 }
 
-.btn-save {
-    display: block;
-    background-color: #ff69b4;
+/* Primary Buttons */
+.main-content .btn-primary {
+    background-color: #e57cd8; /* Toggl primary color */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.main-content .btn-primary:hover {
+    background-color: #d146b5; /* Darker shade for hover */
+}
+
+/* Secondary Buttons */
+.main-content .btn-secondary {
+    background-color: #f2f2f2; /* Light gray background */
+    color: #555; /* Darker text color */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.main-content .btn-secondary:hover {
+    background-color: #e0e0e0; /* Darker shade for hover */
+}
+
+.main-content .btn-toggle, .main-content .btn-save {
+    /* Apply primary button styles */
+    background-color: #e57cd8;
     color: #ffffff;
     border: none;
     padding: 10px 20px;
@@ -129,36 +99,26 @@ body {
     margin-top: 10px;
 }
 
-.btn-save:hover {
-    background-color: #ff1493;
+.main-content .btn-toggle:hover, .main-content .btn-save:hover {
+    background-color: #d146b5;
 }
 
-.activate-toggl {
-    color: #000000;
+.main-content .delete-profile-section {
+    color: #000;
     font-size: 0.9em;
     margin-top: 20px;
 }
 
-.activate-toggl a {
-    color: #dc3545;
-    text-decoration: none;
-}
-
-.activate-toggl a:hover {
-    text-decoration: underline;
-}
-
-.btn-toggle {
-    display: block;
-    background-color: #ff69b4;
+.main-content .btn-delete {
+    display: inline-block;
+    background-color: #ff4d4d;
     color: #ffffff;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
 }
 
-.btn-toggle:hover {
-    background-color: #ff1493;
+.main-content .btn-delete:hover {
+    background-color: #ff1a1a;
 }
