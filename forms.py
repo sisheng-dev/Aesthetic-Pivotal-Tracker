@@ -20,3 +20,8 @@ class TaskForm(FlaskForm):
     taskTitle = StringField('title', validators=[DataRequired(), Length(min=1, max=100)])
     taskDescription = StringField('description', validators=[DataRequired(), Length(min=1, max=500)])
     taskDeadline = DateField('deadline', validators=[DataRequired()])
+
+class ProfileForm(FlaskForm):
+    email = EmailField('email', validators=[DataRequired(), Email(), Length(min=6, max=40)])
+    toggl_api = StringField('toggl_api', validators=[DataRequired(), Length(min=1, max=100)])
+    submit = SubmitField('submit')

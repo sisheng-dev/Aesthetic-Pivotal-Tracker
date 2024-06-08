@@ -7,5 +7,9 @@ COPY templates /usr/local/bin/templates
 COPY app_test.py /usr/local/bin/app.py
 COPY models.py /usr/local/bin/models.py
 COPY forms.py /usr/local/bin/forms.py
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY migrations /usr/local/bin/migrations
 WORKDIR /usr/local/bin
-CMD ["python3", "app.py"]
+RUN chmod +x entrypoint.sh
+# CMD ["python3", "app.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]

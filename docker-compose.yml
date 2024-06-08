@@ -15,7 +15,8 @@ services:
     restart: always
     ports:
       - "8000:8000"
-    command: gunicorn -b 0.0.0.0:8000 app:app
+    # entrypoint: ["./entrypoint.sh"]
+    command: ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
     profiles: ['production']
   app-test:
     image: dwools/flask:aesthetic_pivotal_tracker
@@ -25,6 +26,8 @@ services:
       - ./:/local
     ports:
       - "80:5000"
+      
+    # entrypoint: ["./entrypoint.sh"]
     command: python3 /local/app_test.py
     profiles: ['test']
   db:

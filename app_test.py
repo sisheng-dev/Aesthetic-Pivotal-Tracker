@@ -2,9 +2,10 @@
 # Import the necessary modules
 import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
-from forms import LoginForm, RegisterForm, ProjectForm, TaskForm
+from forms import LoginForm, RegisterForm, ProjectForm, TaskForm, ProfileForm
 from flask_login import login_user, logout_user, login_required, current_user 
 from models import db, login_manager, UserModel, TaskModel, ProjectModel
+from flask_migrate import Migrate
 import re
 import uuid
 
@@ -31,6 +32,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 login_manager.init_app(app)
+
+#Import and initialize Flask-Migrate
+migrate = Migrate(app, db)
 
 @app.route('/')
 def blank():
@@ -112,10 +116,30 @@ def kanban():
     if request.method == 'GET':
         return render_template('kanban.html')
     
-@app.route('/profile', methods=['GET'])
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    return render_template('profile.html')
+    profile_form=ProfileForm()
+    user = UserModel.query.filter_by(id=current_user.id).first()
+    if request.method == 'GET':
+        user_id = current_user.id
+        email = user.email
+        toggl_api = user.toggl_api
+        return render_template('profile.html', profile_form=profile_form, email = email, toggl_api = toggl_api, user=user)
+    if request.method == 'POST':
+        user_id = current_user.id
+        user = UserModel.query.filter_by(id=user_id).first()
+        if profile_form.validate_on_submit():
+            toggl_api = profile_form.toggl_api.data
+            user.toggl_api = toggl_api
+            db.session.commit()
+            return redirect(url_for('profile'))
+        else:
+            flash('Invalid API key')
+            return redirect(url_for('profile'))        
+
+    # return render_template('profile.html', profile_form=profile_form, email = email)
 # return redirect(url_for('index', param1='value1', param2='value2'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -140,9 +164,6 @@ def login():
                 logout_user()
                 return redirect(url_for('login'))
     return render_template('login.html', login_form=login_form)
-
-
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
