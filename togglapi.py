@@ -2,7 +2,6 @@ import requests
 import os
 from requests.auth import HTTPBasicAuth
 from base64 import b64encode
-
 # get api token
 
 """Api token is found in your Toggl Profile. Scroll down to 'API Token' and reveal. """

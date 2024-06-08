@@ -23,7 +23,9 @@
                         <p class="task-description">{{ task.description }}</p>
                         <h4>Deadline:</h4>
                         <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
-
+                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project_title }}', '{{ task.task }}')">Start Timer</button>
+                        <button class="stop-timer-btn" onclick="stopTimer()">Stop Timer</button>
+                        
                         <!-- Edit form (initially hidden) -->
                         <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
                             method="post" action="{{ url_for('edit_task', task_id=task.id) }}">
@@ -87,6 +89,8 @@
                         <h3 class="task-title">{{ task.task }}</h3>
                         <p class="task-description">{{ task.description }}</p>
                         <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
+                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project_title }}', '{{ task.task }}')">Start Timer</button>
+                        <button class="stop-timer-btn" onclick="stopTimer()">Stop Timer</button>
 
                         <!-- Edit form (initially hidden) -->
                         <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"
@@ -149,6 +153,8 @@
                         <h3 class="task-title">{{ task.task }}</h3>
                         <p class="task-description">{{ task.description }}</p>
                         <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
+                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project_title }}', '{{ task.task }}')">Start Timer</button>
+                        <button class="stop-timer-btn" onclick="stopTimer()">Stop Timer</button>
 
                         <!-- Edit form (initially hidden) -->
                         <form id="edit-task-form-{{ task.id }}" class="edit-task-form" style="display: none;"

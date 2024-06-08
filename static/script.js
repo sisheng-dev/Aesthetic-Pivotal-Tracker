@@ -1,47 +1,4 @@
-// function addTicket(section) {
-//     const ticketTitle = prompt("Enter ticket title:");
-//     const ticketDescription = prompt("Enter ticket description:");
-//     const ticketOwner = section === 'critical-tickets' ? prompt("Enter ticket owner:") : null;
-
-//     if (ticketTitle && ticketDescription) {
-//         const ticketSection = document.querySelector(`.${section}`);
-//         const newTicket = document.createElement('div');
-//         newTicket.className = 'ticket';
-
-//         const ticketHeader = document.createElement('div');
-//         ticketHeader.className = 'ticket-header';
-//         ticketHeader.innerText = ticketTitle;
-
-//         const ticketDesc = document.createElement('div');
-//         ticketDesc.className = 'ticket-description';
-//         ticketDesc.innerText = ticketDescription;
-
-//         newTicket.appendChild(ticketHeader);
-//         newTicket.appendChild(ticketDesc);
-
-//         if (ticketOwner) {
-//             const ticketOwnerElem = document.createElement('div');
-//             ticketOwnerElem.className = 'ticket-owner';
-//             ticketOwnerElem.innerText = ticketOwner;
-//             newTicket.appendChild(ticketOwnerElem);
-//         }
-
-//         ticketSection.insertBefore(newTicket, ticketSection.querySelector('button'));
-//     }
-// }
-
-// function addKanbanTask(columnId) {
-//     const taskTitle = prompt("Enter task title:");
-//     if (taskTitle) {
-//         const column = document.getElementById(columnId);
-//         const newTask = document.createElement('div');
-//         newTask.className = 'kanban-tasks';
-//         newTask.innerText = taskTitle;
-//         column.appendChild(newTask);
-//     }
-// }
-
-$(document).ready(function() {
+$(document).ready(function () {
     $('#calendar').fullCalendar({
         defaultView: 'month',
         editable: true,
@@ -75,7 +32,7 @@ function drop(event) {
     const data = event.dataTransfer.getData("text");
     const task = document.getElementById(data);
     const targetColumn = event.target.closest('.drag-item-list');
-    
+
     if (targetColumn && task) {
         targetColumn.appendChild(task);
 
@@ -96,17 +53,17 @@ function drop(event) {
             },
             body: JSON.stringify({ status: newStatus })
         })
-        .then(response => {
-            if (response.ok) {
-                console.log('Task status updated successfully.');
-            } else {
-                console.log('Failed to update task status.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-        
+            .then(response => {
+                if (response.ok) {
+                    console.log('Task status updated successfully.');
+                } else {
+                    console.log('Failed to update task status.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
     }
 }
 
@@ -128,10 +85,10 @@ function hideInputBox(columnId) {
     inputBox.style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const addTaskButtons = document.querySelectorAll('.add-task-button');
     addTaskButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const columnId = button.parentElement.nextElementSibling.id;
             showInputBox(columnId);
         });
@@ -139,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const addBtnSolid = document.querySelectorAll('.add-btn.solid');
     addBtnSolid.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const columnId = button.previousElementSibling.id.replace('new-task-', '');
             addTask(columnId);
         });
@@ -147,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const closeButtons = document.querySelectorAll('.close');
     closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             button.parentElement.style.display = 'none';
         });
     });
@@ -156,14 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function deleteTask(taskId) {
     fetch('/delete-task/' + taskId, {
-      method: 'POST',
+        method: 'POST',
     })
-      .then(response => {
-        if (response.redirected) {
-          window.location.href = response.url;
-        }
-      });
-  }
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        });
+}
 
 // Show the edit form
 function showEditForm(taskId) {
@@ -194,10 +151,10 @@ function hideEditForm(taskId) {
 }
 
 // Add event listeners for confirm and cancel buttons
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const editForms = document.querySelectorAll('.edit-task-form');
     editForms.forEach(form => {
-        form.addEventListener('submit', function(event) {
+        form.addEventListener('submit', function (event) {
             event.preventDefault();
             const taskId = form.parentElement.id;
             const formData = new FormData(form);
@@ -224,3 +181,51 @@ function getCSRFToken() {
     return document.querySelector('input[name="csrf_token"]').value;
 }
 
+function startTimer(description, projectTitle, taskTitle) {
+    fetch('/start_timer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            description: description,
+            project_id: projectTitle,
+            tags: [taskTitle]
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            alert('Timer started successfully!');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Failed to start timer.');
+        });
+}
+function stopTimer() {
+    if (currentTimerId === null) {
+        alert('No timer is running.');
+        return;
+    }
+
+    fetch('/stop_timer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            time_entry_id: currentTimerId
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            alert('Timer stopped successfully!');
+            currentTimerId = null;  // Clear the timer ID
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Failed to stop timer.');
+        });
+}

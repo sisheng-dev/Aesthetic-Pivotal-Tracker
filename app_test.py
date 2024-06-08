@@ -8,6 +8,10 @@ from models import db, login_manager, UserModel, TaskModel, ProjectModel
 from flask_migrate import Migrate
 import re
 import uuid
+import requests
+import os
+from requests.auth import HTTPBasicAuth
+from base64 import b64encode
 
 # Create a new Flask application instance
 app = Flask(__name__)
@@ -208,9 +212,9 @@ def new_project():
     project_form = ProjectForm()
     if project_form.validate_on_submit():
         title = project_form.projectTitle.data
-        user_id = UserModel.query.filter_by(email=session['email']).first().id
         # Generate a unique URL for the project
         url = generate_url_suffix(title)
+        user_id = current_user.id
         # Create a new project in the database
         project = ProjectModel(project=title, user_id=user_id, url=url)
         db.session.add(project)
@@ -229,6 +233,55 @@ def edit_project(project_id):
         flash('Failed to update project')
     return redirect(url_for('home'))
 
+def start_timer(description, project_id=None, tags=None):
+    TOGGL_API_URL = "https://api.track.toggl.com/api/v8"
+    TOGGL_API_TOKEN = current_user.toggl_api
+    url = f"{TOGGL_API_URL}/time_entries"
+    data = {
+        "description": description,
+        "pid": project_id,
+        "tags": tags,
+        "created_with": "API"
+    }
+    response = requests.post(url, json=data, auth=HTTPBasicAuth(TOGGL_API_TOKEN, 'api_token'))
+    return response.json()
+
+def stop_timer(time_entry_id):
+    TOGGL_API_URL = "https://api.track.toggl.com/api/v8"
+    TOGGL_API_TOKEN = current_user.toggl_api
+    url = f"{TOGGL_API_URL}/time_entries/{time_entry_id}/stop"
+    response = requests.patch(url, auth=HTTPBasicAuth(TOGGL_API_TOKEN, 'api_token'))
+    return response.json()
+
+@app.route('/start_timer', methods=['POST'])
+def start():
+    data = request.json
+    description = data.get('description')
+    project_id = data.get('project_id')
+    tags = data.get('tags')
+    
+    timer = start_timer(description, project_id, tags)
+    
+    return jsonify({
+        "message": "Timer started successfully",
+        "timer_id": timer.get('id'),
+        "start_time": timer.get('start'),
+        "duration": timer.get('duration')
+    })
+
+@app.route('/stop_timer', methods=['POST'])
+def stop():
+    data = request.json
+    time_entry_id = data.get('time_entry_id')
+    
+    timer = stop_timer(time_entry_id)
+    
+    return jsonify({
+        "message": "Timer stopped successfully",
+        "timer_id": timer.get('id'),
+        "stop_time": timer.get('stop'),
+        "duration": timer.get('duration')
+    })
 
 
 
@@ -337,7 +390,7 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    flash ('You must be logged in to view that page')
+    # flash ('You must be logged in to view that page')
     return redirect(url_for('login'))
 
 
