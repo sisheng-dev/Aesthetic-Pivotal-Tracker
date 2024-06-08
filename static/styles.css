@@ -385,8 +385,8 @@ a:hover {
 
 .card-header {
   position: absolute;
-  right: 10;
-  top: 10;
+  right: 10px;
+  top: 10px;
 }
 
 .dropdown-button {
