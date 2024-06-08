@@ -1,35 +1,14 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Settings</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='profile_style.css') }}">
-</head>
-<body> -->
 {% extends "base.html" %}
 {% block title %}Profile{% endblock title %}
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile_style.css') }}">
+{% endblock extra_head %}
 {% block content %}
-<!-- <div class="container">
-        <aside class="sidebar">
-            <h2>Account Settings</h2>
-            <ul>
-                <li class="active">Account</li>
-                <li>Password</li>
-                <li>Contact Us</li>
-            </ul>
-        </aside> -->
 <main class="main-content">
     <div class="header">
         <h1>Account</h1>
     </div>
     <div class="content">
-        <div class="avatar-section">
-            <h2>Avatar</h2>
-            <img src="profile-pic.jpg" alt="Profile Picture" class="profile-pic">
-            <button class="btn-change">Change image</button>
-            <p>Min. 200x200px, .PNG or .JPEG</p>
-        </div>
         <div class="form-section">
             <form action="" method="post">
                 {{ profile_form.csrf_token }}
@@ -37,10 +16,10 @@
                 <input type="text" id="name" value="Enter Name">
                 <label for="email">Email</label>
                 <div class="input-box">
-                    {{ profile_form.email(placeholder = user.email) }}
+                    {{ profile_form.email(placeholder=user.email) }}
                     <i class='bx bxs-user'></i>
                 </div>
-                <button type="submit">Update Email</button>
+                <button type="submit" class="btn-primary">Update Email</button>
             </form>
         </div>
         <div class="form-section">
@@ -48,19 +27,21 @@
                 {{ profile_form.csrf_token }}
                 <label for="Toggl">Toggl API Token</label>
                 <div class="input-box">
-                    {{ profile_form.toggl_api(placeholder = user.toggl_api) }}
+                    {{ profile_form.toggl_api(placeholder=user.toggl_api) }}
                     <i class='bx bxs-user'></i>
                 </div>
-                <button type="submit">Update Toggl API Token</button>
+                <button type="submit" class="btn-primary">Update Toggl API Token</button>
             </form>
         </div>
         <div class="integrations-section">
-            <button class="btn-toggle">Activate Toggl</button>
+            <button class="btn-primary">Activate Toggl</button>
+        </div>
+        <div class="delete-profile-section">
+            <form action="{{ url_for('delete_profile') }}" method="post">
+                {{ profile_form.csrf_token }}
+                <button type="submit" class="btn-secondary">Delete Profile</button>
+            </form>
         </div>
     </div>
 </main>
-</div>
-
 {% endblock content %}
-
-

@@ -4,6 +4,7 @@ import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
 from forms import LoginForm, RegisterForm, ProjectForm, TaskForm, ProfileForm
 from flask_login import login_user, logout_user, login_required, current_user 
+from flask_wtf import CSRFProtect                                                      #NCR: del profile
 from models import db, login_manager, UserModel, TaskModel, ProjectModel
 from flask_migrate import Migrate
 import re
@@ -11,6 +12,10 @@ import uuid
 
 # Create a new Flask application instance
 app = Flask(__name__)
+
+csrf = CSRFProtect()                                                             #NCR: del profile  
+csrf.init_app(app)                                                              #NCR: del profile
+
 app.secret_key='super secret key'
 
 DBUSER = 'dwools'
@@ -40,6 +45,19 @@ migrate = Migrate(app, db)
 def blank():
     return redirect(url_for('home'))
 
+@app.route('/delete_profile', methods=['POST'])
+@login_required
+def delete_profile():
+    user_id = current_user.id
+    user = UserModel.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        logout_user()
+        flash('Profile deleted successfully')
+    else:
+        flash('Profile not found')
+    return redirect(url_for('login'))
 
 #add user routine
 def add_user(email, password):
