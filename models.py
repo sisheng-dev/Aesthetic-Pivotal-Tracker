@@ -43,10 +43,10 @@ class TaskModel(db.Model):
             'task': self.task,
             'description': self.description,
             'project_id': self.project_id,
-            'project_title': self.project_title,
             'deadline': self.deadline,
             'user_id': self.user_id,
-            'status': self.status
+            'status': self.status,
+            'project_title': self.project.project
         }
 
 class ProjectModel(db.Model):

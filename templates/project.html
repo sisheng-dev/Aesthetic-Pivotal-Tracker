@@ -15,6 +15,7 @@
                         <div class="card-header">
                             <button class="dropdown-button" onclick="toggleDropdown(event)">&#8942;</button>
                             <div class="dropdown-content">
+                                {{ task_form.csrf_token }}
                                 <a class="edit-task-option" onclick="showEditForm({{ task.id }})">Edit task</a>
                                 <a class="delete-task-option" onclick="deleteTask({{ task.id }})">Delete task</a>
                             </div>
@@ -23,7 +24,7 @@
                         <p class="task-description">{{ task.description }}</p>
                         <h4>Deadline:</h4>
                         <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
-                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project_title }}', '{{ task.task }}')">Start Timer</button>
+                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project.project }}', '{{ task.task }}')">Start Timer</button>
                         <button class="stop-timer-btn" onclick="stopTimer()">Stop Timer</button>
                         
                         <!-- Edit form (initially hidden) -->
@@ -89,7 +90,7 @@
                         <h3 class="task-title">{{ task.task }}</h3>
                         <p class="task-description">{{ task.description }}</p>
                         <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
-                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project_title }}', '{{ task.task }}')">Start Timer</button>
+                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project.project }}', '{{ task.task }}')">Start Timer</button>
                         <button class="stop-timer-btn" onclick="stopTimer()">Stop Timer</button>
 
                         <!-- Edit form (initially hidden) -->
@@ -153,7 +154,7 @@
                         <h3 class="task-title">{{ task.task }}</h3>
                         <p class="task-description">{{ task.description }}</p>
                         <p class="task-deadline">{{ task.deadline.strftime('%B %d, %Y') }}</p>
-                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project_title }}', '{{ task.task }}')">Start Timer</button>
+                        <button class="start-timer-btn" onclick="startTimer('{{ task.description }}', '{{ task.project.project }}', '{{ task.task }}')">Start Timer</button>
                         <button class="stop-timer-btn" onclick="stopTimer()">Stop Timer</button>
 
                         <!-- Edit form (initially hidden) -->

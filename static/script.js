@@ -229,3 +229,7 @@ function stopTimer() {
             alert('Failed to stop timer.');
         });
 }
+
+function getCSRFToken() {
+    return document.querySelector('input[name="csrf_token"]').value;
+}

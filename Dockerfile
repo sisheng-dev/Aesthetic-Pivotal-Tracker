@@ -16,6 +16,6 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY migrations /usr/local/bin/migrations
 WORKDIR /usr/local/bin
 RUN chmod +x entrypoint.sh
-EXPOSE 8000
+# EXPOSE 8000
 # CMD ["python3", "app.py"]
 CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
