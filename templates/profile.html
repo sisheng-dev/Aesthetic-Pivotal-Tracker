@@ -40,11 +40,18 @@
                     {{ profile_form.email(placeholder = user.email) }}
                     <i class='bx bxs-user'></i>
                 </div>
+                <button type="submit">Update Email</button>
+            </form>
+        </div>
+        <div class="form-section">
+            <form action="" method="post">
+                {{ profile_form.csrf_token }}
                 <label for="Toggl">Toggl API Token</label>
                 <div class="input-box">
                     {{ profile_form.toggl_api(placeholder = user.toggl_api) }}
                     <i class='bx bxs-user'></i>
                 </div>
+                <button type="submit">Update Toggl API Token</button>
             </form>
         </div>
         <div class="integrations-section">
@@ -55,3 +62,5 @@
 </div>
 
 {% endblock content %}
+
+

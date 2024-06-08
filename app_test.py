@@ -126,16 +126,21 @@ def profile():
         toggl_api = user.toggl_api
         return render_template('profile.html', profile_form=profile_form, email = email, toggl_api = toggl_api, user=user)
     if request.method == 'POST':
+        # flash("profile_form_posted")
         user_id = current_user.id
         user = UserModel.query.filter_by(id=user_id).first()
-        if profile_form.validate_on_submit():
-            toggl_api = profile_form.toggl_api.data
-            user.toggl_api = toggl_api
-            db.session.commit()
-            return redirect(url_for('profile'))
-        else:
-            flash('Invalid API key')
-            return redirect(url_for('profile'))        
+        # if profile_form.validate_on_submit():
+        # flash("profile_form_validated")
+        toggl_api = profile_form.toggl_api.data
+        # flash(f'{toggl_api}')
+        user.toggl_api = toggl_api
+        # flash(f'{user.toggl_api}')
+        db.session.commit()
+        # flash('API key updated')
+        return redirect(url_for('profile'))
+        # else:
+        #     flash('Invalid API key')
+        #     return redirect(url_for('profile'))        
 
     # return render_template('profile.html', profile_form=profile_form, email = email)
 # return redirect(url_for('index', param1='value1', param2='value2'))
