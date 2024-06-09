@@ -55,7 +55,7 @@ class ProjectModel(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
     url = db.Column(db.String(100), nullable=False)
 
-    tasks = db.relationship('TaskModel', backref='project', lazy=True)
+    tasks = db.relationship('TaskModel', backref='project', lazy=True, cascade="all, delete-orphan")
     
     def to_dict(self):
         return {

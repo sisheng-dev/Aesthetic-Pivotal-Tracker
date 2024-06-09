@@ -15,7 +15,6 @@
                         <div class="card-header">
                             <button class="dropdown-button" onclick="toggleDropdown(event)">&#8942;</button>
                             <div class="dropdown-content">
-                                {{ task_form.csrf_token }}
                                 <a class="edit-task-option" onclick="showEditForm({{ task.id }})">Edit task</a>
                                 <a class="delete-task-option" onclick="deleteTask({{ task.id }})">Delete task</a>
                             </div>
@@ -64,7 +63,6 @@
                             <i class='bx bxs-user'></i>
                         </div>
 
-                        <!-- <input type="text" id="new-task-to-do-content" class="add-item" placeholder="Add a task"> -->
                         <button class="add-btn solid" onclick="addTask('to-do-content')">Save Item</button>
                         <button class="add-btn solid" onclick="hideInputBox('to-do-content')">Cancel</button>
                     </form>

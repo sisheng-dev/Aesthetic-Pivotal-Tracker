@@ -93,13 +93,21 @@
 
   function deleteProject(projectId) {
     fetch('/delete-project/' + projectId, {
-      method: 'POST',
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCSRFToken()
+      }
     })
     .then(response => {
-      if (response.redirected) {
-        window.location.href = response.url;
+      if (response.ok) {
+        document.getElementById('project-card-' + projectId).remove();
       }
     });
+  }
+
+  function getCSRFToken() {
+    return document.querySelector('input[name="csrf_token"]').value;
   }
 </script>
 

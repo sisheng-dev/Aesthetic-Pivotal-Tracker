@@ -110,17 +110,29 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
+    // Delete task function
 function deleteTask(taskId) {
     fetch('/delete-task/' + taskId, {
-        method: 'POST',
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        }
     })
-        .then(response => {
-            if (response.redirected) {
-                window.location.href = response.url;
-            }
-        });
+    .then(response => {
+        if (response.ok) {
+            document.getElementById(taskId).remove();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
+
+function getCSRFToken() {
+    return document.querySelector('input[name="csrf_token"]').value;
+}
+
 
 // Show the edit form
 function showEditForm(taskId) {
@@ -177,15 +189,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function getCSRFToken() {
-    return document.querySelector('input[name="csrf_token"]').value;
-}
-
 function startTimer(description, projectTitle, taskTitle) {
     fetch('/start_timer', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
         },
         body: JSON.stringify({
             description: description,
@@ -193,18 +202,21 @@ function startTimer(description, projectTitle, taskTitle) {
             tags: [taskTitle]
         })
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            alert('Timer started successfully!');
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Failed to start timer.');
-        });
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        alert('Timer started successfully!');
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Failed to start timer.');
+    });
 }
+
 function stopTimer() {
-    if (currentTimerId === null) {
+    const time_entry_id = getCurrentTimeEntryId(); // Implement this function to get the current time entry ID
+
+    if (!time_entry_id) {
         alert('No timer is running.');
         return;
     }
@@ -213,23 +225,19 @@ function stopTimer() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
         },
         body: JSON.stringify({
-            time_entry_id: currentTimerId
+            time_entry_id: time_entry_id
         })
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            alert('Timer stopped successfully!');
-            currentTimerId = null;  // Clear the timer ID
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Failed to stop timer.');
-        });
-}
-
-function getCSRFToken() {
-    return document.querySelector('input[name="csrf_token"]').value;
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        alert('Timer stopped successfully!');
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Failed to stop timer.');
+    });
 }
